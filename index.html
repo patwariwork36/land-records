@@ -708,10 +708,11 @@
             vals.forEach(v => { const o = document.createElement('option'); o.value = o.text = v; sel.appendChild(o); });
         }
 
-        // ── Village change → fill basra ───────────────
+        // ── Village change → fill basra & farmers ───────────────
         document.getElementById('villageInput').addEventListener('change', function () {
-            if (currentTab !== 'basra') return;
             const v = this.value;
+
+            // 1. Populate Basra
             const sel = document.getElementById('basraVal');
             const basras = [...new Set(records.filter(r => r.v === v).map(r => r.bn).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'hi'));
             sel.innerHTML = '<option value="" disabled selected>— बसरा चुनें —</option>';
@@ -719,7 +720,20 @@
             sel.disabled = false;
             sel.classList.remove('form-select');
             sel.className = 'form-select';
-            toast(`${basras.length} बसरा उपलब्ध`, 'info');
+
+            // 2. Populate Farmer Names
+            const farmerList = document.getElementById('farmerList');
+            const namInput = document.getElementById('namVal');
+            if (farmerList && namInput) {
+                const names = [...new Set(records.filter(r => r.v === v).map(r => r.owner).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'hi'));
+                farmerList.innerHTML = '';
+                names.forEach(n => { const o = document.createElement('option'); o.value = n; farmerList.appendChild(o); });
+                namInput.disabled = false;
+                namInput.placeholder = 'नाम टाइप करें या चुनें';
+            }
+
+            if (currentTab === 'basra') toast(`${basras.length} बसरा उपलब्ध`, 'info');
+            else if (currentTab === 'nam') toast(`${farmerList.options.length} भूमिस्वामी उपलब्ध`, 'info');
         });
 
         // ── Tab Switch ────────────────────────────────
