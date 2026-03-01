@@ -933,23 +933,24 @@
         }
 
         function row2(label, value, accent) {
-            return `<tr>
-                <td style="padding:11px 16px;font-weight:700;font-size:14px;color:${accent || '#1a1a6e'};background:#f0f4ff;border:1px solid #d1d9ff;width:38%;font-family:Arial,sans-serif;vertical-align:middle;">${label}</td>
-                <td style="padding:11px 16px;font-size:15px;font-weight:600;color:#1e1e3a;border:1px solid #d1d9ff;font-family:'Noto Sans Devanagari',Arial,sans-serif;vertical-align:middle;">${value || '—'}</td>
+            const cellStyle = `display:table-cell; padding:14px 18px; font-size:15px; vertical-align:middle; border:1px solid #d1d9ff; line-height:1.5;`;
+            return `<tr style="display:table-row;">
+                <td style="${cellStyle} font-weight:700; color:${accent || '#1a1a6e'}; background:#f0f4ff; width:38%; font-family:Arial,sans-serif;">${label}</td>
+                <td style="${cellStyle} font-weight:600; color:#1e1e3a; font-family:'Noto Sans Devanagari',Arial,sans-serif;">${value || '—'}</td>
             </tr>`;
         }
 
         async function exportSinglePDF(r) {
             toast('PDF बन रहा है...', 'info');
             const box = document.createElement('div');
-            box.style.cssText = 'position:absolute;left:-9999px;top:0;width:794px;background:#fff;font-family:"Noto Sans Devanagari",Arial,sans-serif;';
+            box.style.cssText = 'position:absolute;left:-9999px;top:0;width:800px;background:#fff;';
             const date = new Date().toLocaleDateString('hi-IN');
             box.innerHTML = `
-            <div style="width:794px;background:#fff;">
+            <div style="width:800px;background:#fff;">
                 ${makePrintHeader('खसरा प्रमाण-पत्र', `दिनांक: ${date} &nbsp;|&nbsp; हल्का 43 एवं 28`)}
-                <div style="padding:24px 28px;">
-                    <div style="margin-bottom:16px;font-size:14px;font-weight:800;color:#1a1a6e;font-family:Arial,sans-serif;">📋 भूमि रिकॉर्ड विवरण</div>
-                    <table style="width:100%;border-collapse:collapse;">
+                <div style="padding:28px 32px;">
+                    <div style="margin-bottom:18px;font-size:15px;font-weight:800;color:#1a1a6e;font-family:Arial,sans-serif;letter-spacing:0.03em;">📋 भूमि रिकॉर्ड विवरण</div>
+                    <table style="width:100%;border-collapse:collapse;display:table;">
                         ${row2('ग्राम', r.v)}
                         ${row2('खसरा नंबर', r.kn)}
                         ${row2('बसरा नंबर', r.bn)}
@@ -958,14 +959,14 @@
                         ${row2('भूमि का प्रकार', r.type)}
                         ${r.nistar ? row2('निस्तार पत्रक विवरण', r.nistar) : ''}
                     </table>
-                    <div style="margin-top:24px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:12px 16px;font-size:11px;color:#78350f;font-family:Arial,sans-serif;">
+                    <div style="margin-top:28px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:14px 18px;font-size:12px;color:#78350f;font-family:Arial,sans-serif;">
                         ⚠️ यह एक कम्प्यूटर जनित रिकॉर्ड है। सरकारी उपयोग के लिए पटवारी कार्यालय से सत्यापित करें।
                     </div>
                 </div>
             </div>`;
             document.body.appendChild(box);
             try {
-                await new Promise(r => setTimeout(r, 200));
+                await new Promise(res => setTimeout(res, 300));
                 await captureAndDownload(box, `खसरा_${r.v}_${r.kn}.pdf`);
                 toast('PDF डाउनलोड हो गया!', 'success');
             } catch (e) { console.error(e); toast('PDF में त्रुटि हुई', 'error'); }
@@ -975,58 +976,101 @@
         async function exportPortfolioPDF(owner, village, basraNo, count, totalArea) {
             toast('पोर्टफोलियो PDF बन रहा है...', 'info');
             const basraRecs = records.filter(r => r.v === village && r.bn === basraNo);
-            const box = document.createElement('div');
-            box.style.cssText = 'position:absolute;left:-9999px;top:0;width:800px;background:#fff;font-family:"Noto Sans Devanagari",Arial,sans-serif;padding-bottom:40px;';
             const date = new Date().toLocaleDateString('hi-IN');
-            const rows = basraRecs.map((r, i) => `
-                <tr style="background:${i % 2 === 0 ? '#f7f8ff' : '#fff'}; page-break-inside:avoid;">
-                    <td style="padding:12px 14px;border:1px solid #d1d9ff;font-family:Arial,sans-serif;text-align:center;font-weight:800;font-size:15px;vertical-align:middle;">${r.kn}</td>
-                    <td style="padding:12px 14px;border:1px solid #d1d9ff;font-family:'Noto Sans Devanagari',Arial,sans-serif;font-size:14px;font-weight:600;vertical-align:middle;">${r.owner}</td>
-                    <td style="padding:12px 14px;border:1px solid #d1d9ff;text-align:center;font-family:Arial,sans-serif;font-size:14px;font-weight:700;vertical-align:middle;">${r.area}</td>
-                    <td style="padding:12px 14px;border:1px solid #d1d9ff;font-family:'Noto Sans Devanagari',Arial,sans-serif;font-size:14px;font-weight:600;vertical-align:middle;">${r.type}</td>
-                    <td style="padding:12px 14px;border:1px solid #d1d9ff;font-size:14px;font-weight:600;font-family:'Noto Sans Devanagari',Arial,sans-serif;vertical-align:middle;">${r.nistar || '—'}</td>
-                </tr>`).join('');
 
-            box.innerHTML = `
-            <div style="width:794px;background:#fff;">
-                ${makePrintHeader('भूमिस्वामी पोर्टफोलियो रिपोर्ट', `ग्राम: ${village} &nbsp;|&nbsp; बसरा: ${basraNo} &nbsp;|&nbsp; दिनांक: ${date}`)}
-                <div style="padding:20px 28px;">
-                    <div style="background:#f0f4ff;border-radius:10px;padding:16px 20px;margin-bottom:20px;display:flex;flex-wrap:wrap;gap:16px;">
-                        <div style="flex:1;min-width:180px;">
-                            <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.07em;font-family:Arial;">भूमिस्वामी</div>
-                            <div style="font-size:18px;font-weight:900;color:#1a1a6e;margin-top:4px;font-family:'Noto Sans Devanagari',Arial,sans-serif;">${owner}</div>
-                        </div>
-                        <div style="text-align:center;padding:0 20px;">
-                            <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;font-family:Arial;">कुल खसरा</div>
-                            <div style="font-size:28px;font-weight:900;color:#1a1a6e;font-family:Arial;">${count}</div>
-                        </div>
-                        <div style="text-align:center;padding:0 20px;">
-                            <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;font-family:Arial;">कुल क्षेत्रफल (हे.)</div>
-                            <div style="font-size:28px;font-weight:900;color:#1a1a6e;font-family:Arial;">${totalArea}</div>
-                        </div>
-                    </div>
-                    <table style="width:100%;border-collapse:collapse;">
-                        <thead><tr style="background:#1a1a6e;color:#fff;">
-                            <th style="padding:12px;font-size:14px;font-family:Arial;border:1px solid #1a1a6e;vertical-align:middle;">खसरा नं.</th>
-                            <th style="padding:12px;font-size:14px;font-family:'Noto Sans Devanagari',Arial;border:1px solid #1a1a6e;vertical-align:middle;">भूमिस्वामी</th>
-                            <th style="padding:12px;font-size:14px;font-family:Arial;border:1px solid #1a1a6e;vertical-align:middle;">क्षेत्रफल</th>
-                            <th style="padding:12px;font-size:14px;font-family:'Noto Sans Devanagari',Arial;border:1px solid #1a1a6e;vertical-align:middle;">प्रकार</th>
-                            <th style="padding:12px;font-size:14px;font-family:'Noto Sans Devanagari',Arial;border:1px solid #1a1a6e;vertical-align:middle;">निस्तार</th>
-                        </tr></thead>
-                        <tbody>${rows}</tbody>
-                    </table>
-                    <div style="margin-top:20px;background:#fffbeb;border:1px solid #fde68a;border-radius:8px;padding:10px 14px;font-size:11px;color:#78350f;font-family:Arial,sans-serif;">
-                        ⚠️ यह कम्प्यूटर जनित रिकॉर्ड है। सरकारी उपयोग हेतु पटवारी कार्यालय से सत्यापित करें।
-                    </div>
-                </div>
-            </div>`;
-            document.body.appendChild(box);
             try {
-                await new Promise(r => setTimeout(r, 200));
-                await captureAndDownload(box, `पोर्टफोलियो_${village}_बसरा${basraNo}.pdf`);
+                const { jsPDF } = window.jspdf;
+                const pdf = new jsPDF({ orientation: 'portrait', unit: 'mm', format: 'a4' });
+                const pageW = 210;
+
+                // ── STEP 1: Render the gradient header + summary section via html2canvas ──
+                const headerBox = document.createElement('div');
+                headerBox.style.cssText = 'position:absolute;left:-9999px;top:0;width:800px;background:#fff;font-family:"Noto Sans Devanagari",Arial,sans-serif;';
+                headerBox.innerHTML = `
+                    <div>
+                        ${makePrintHeader('भूमिस्वामी पोर्टफोलियो रिपोर्ट', `ग्राम: ${village} &nbsp;|&nbsp; बसरा: ${basraNo} &nbsp;|&nbsp; दिनांक: ${date}`)}
+                        <div style="padding:18px 24px;background:#f0f4ff;display:flex;flex-wrap:wrap;gap:20px;align-items:center;">
+                            <div style="flex:1;min-width:160px;">
+                                <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;letter-spacing:0.07em;font-family:Arial;">भूमिस्वामी</div>
+                                <div style="font-size:20px;font-weight:900;color:#1a1a6e;margin-top:5px;font-family:'Noto Sans Devanagari',Arial;">${owner}</div>
+                            </div>
+                            <div style="text-align:center;padding:8px 24px;background:#fff;border-radius:10px;border:1px solid #d1d9ff;">
+                                <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;font-family:Arial;">कुल खसरा</div>
+                                <div style="font-size:30px;font-weight:900;color:#1a1a6e;font-family:Arial;">${count}</div>
+                            </div>
+                            <div style="text-align:center;padding:8px 24px;background:#fff;border-radius:10px;border:1px solid #d1d9ff;">
+                                <div style="font-size:11px;font-weight:700;color:#64748b;text-transform:uppercase;font-family:Arial;">कुल क्षेत्रफल (हे.)</div>
+                                <div style="font-size:30px;font-weight:900;color:#1a1a6e;font-family:Arial;">${totalArea}</div>
+                            </div>
+                        </div>
+                    </div>`;
+                document.body.appendChild(headerBox);
+                await new Promise(res => setTimeout(res, 200));
+
+                const hCanvas = await html2canvas(headerBox, { scale: 3, backgroundColor: '#ffffff', logging: false, useCORS: true });
+                document.body.removeChild(headerBox);
+
+                const hImgData = hCanvas.toDataURL('image/jpeg', 0.97);
+                const hH_mm = (hCanvas.height / hCanvas.width) * pageW;
+                pdf.addImage(hImgData, 'JPEG', 0, 0, pageW, hH_mm);
+
+                // ── STEP 2: Use autoTable for data rows — native page break support ──
+                const tableBody = basraRecs.map(r => [
+                    r.kn,
+                    r.owner,
+                    r.area,
+                    r.type || '—',
+                    r.nistar || '—'
+                ]);
+
+                pdf.autoTable({
+                    startY: hH_mm + 4,
+                    head: [['खसरा नं.', 'भूमिस्वामी', 'क्षेत्रफल (हे.)', 'प्रकार', 'निस्तार विवरण']],
+                    body: tableBody,
+                    theme: 'striped',
+                    headStyles: {
+                        fillColor: [26, 26, 110],
+                        textColor: 255,
+                        fontSize: 11,
+                        fontStyle: 'bold',
+                        halign: 'center',
+                        valign: 'middle',
+                        cellPadding: 5
+                    },
+                    bodyStyles: {
+                        fontSize: 11,
+                        valign: 'middle',
+                        cellPadding: 5,
+                        lineColor: [209, 217, 255],
+                        lineWidth: 0.3
+                    },
+                    columnStyles: {
+                        0: { halign: 'center', fontStyle: 'bold', cellWidth: 22 },
+                        2: { halign: 'center', cellWidth: 28 },
+                        3: { cellWidth: 30 },
+                    },
+                    alternateRowStyles: { fillColor: [247, 248, 255] },
+                    margin: { left: 7, right: 7 },
+                    didParseCell: (data) => {
+                        // Ensure all cells remain vertically centered
+                        data.cell.styles.valign = 'middle';
+                    }
+                });
+
+                // ── STEP 3: Footer disclaimer ──
+                const finalY = (pdf.lastAutoTable ? pdf.lastAutoTable.finalY : 280) + 8;
+                pdf.setFontSize(9);
+                pdf.setTextColor(120, 53, 15);
+                if (finalY < 290) {
+                    pdf.text('यह कम्प्यूटर जनित रिकॉर्ड है। सरकारी उपयोग हेतु पटवारी कार्यालय से सत्यापित करें।', 105, finalY, { align: 'center' });
+                }
+
+                pdf.save(`पोर्टफोलियो_${village}_बसरा${basraNo}.pdf`);
                 toast('पोर्टफोलियो PDF डाउनलोड हो गया!', 'success');
-            } catch (e) { console.error(e); toast('पोर्टफोलियो PDF में त्रुटि हुई', 'error'); }
-            finally { document.body.removeChild(box); }
+            } catch (e) {
+                console.error(e);
+                toast('पोर्टफोलियो PDF में त्रुटि हुई', 'error');
+            }
         }
 
         // ── Init ──────────────────────────────────────
