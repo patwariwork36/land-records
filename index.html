@@ -463,6 +463,8 @@
             }
         }
     </style>
+    <!-- PapaParse for ultra-fast CSV streaming -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
 </head>
 
 <body>
@@ -610,94 +612,47 @@
             Toastify({ text: msg, duration: 3500, gravity: 'top', position: 'right', style: { background: bg[type] || bg.info, borderRadius: '10px', fontWeight: '700', fontSize: '14px' } }).showToast();
         }
 
-        // ── CSV Loader with robust proxy chain ─────────
-        async function loadData() {
-            document.getElementById('recordCountBadge').textContent = '⏳ डेटा लोड हो रहा है...';
+        // ── CSV Loader (Ultra-fast PapaParse Streaming) ─────────
+        function loadData() {
+            const badge = document.getElementById('recordCountBadge');
+            badge.textContent = '⏳ डेटा लोड हो रहा है...';
 
+            // Use Papa Parse to stream directly from the Google Sheet URL 
+            // This is non-blocking, uses web workers, and is significantly faster than fetch().text()
             const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7w0RI9RMbD3vx841C6CHzFyHwwbX2L5zyhjabc2ov7AvR7OWzJfXgvbiPvV6oXvhJZj5RCmcOzq2r/pub?gid=1832973148&single=true&output=csv";
 
-            // Try direct fetch first (fastest, Google supports CORS for published ranges), then proxy fallbacks
-            const URLS = [
-                SHEET_URL,
-                `https://api.allorigins.win/raw?url=${encodeURIComponent(SHEET_URL)}`,
-                `https://corsproxy.io/?${encodeURIComponent(SHEET_URL)}`,
-                `https://thingproxy.freeboard.io/fetch/${SHEET_URL}`
-            ];
+            Papa.parse(SHEET_URL, {
+                download: true,
+                header: true,      // Automatically uses first row as object keys
+                worker: true,      // Runs in background thread (no UI freeze)
+                skipEmptyLines: 'greedy',
+                complete: function(results) {
+                    if (results.errors.length > 0 && results.data.length === 0) {
+                        badge.innerHTML = `❌ लोड विफल &nbsp;<button onclick="loadData()" style="background:#1a1a6e;color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer;font-weight:700;">🔄 पुनः प्रयास</button>`;
+                        toast('डेटा लोड विफल — "पुनः प्रयास" बटन दबाएं', 'error');
+                        return;
+                    }
+                    
+                    // Format data exactly how the rest of the app expects it
+                    records = results.data.map((o, i) => ({
+                        id: i + 1,
+                        v: o['ग्राम'] || '',
+                        kn: o['खसरा नंबर'] || '',
+                        bn: o['बसरा नंबर'] || '',
+                        owner: (o['भूमिस्वामी का नाम'] || 'अज्ञात').replace(/\n/g, ' '),
+                        area: parseFloat(o['क्षेत्रफल'] || 0).toFixed(3),
+                        type: o['सिंचित / असिंचित'] || '',
+                        nistar: o['निस्तार पत्रक विवरण'] || ''
+                    })).filter(r => r.v && r.kn); // Ensure valid records
 
-            async function tryFetch(url) {
-                const controller = new AbortController();
-                const timer = setTimeout(() => controller.abort(), 10000); // 10s timeout
-                try {
-                    const res = await fetch(url, { cache: 'no-cache', redirect: 'follow', signal: controller.signal });
-                    clearTimeout(timer);
-                    if (!res.ok) return null;
-                    const text = await res.text();
-                    // Validate: must contain real CSV data
-                    return text.includes('ग्राम') && text.length > 500 ? text : null;
-                } catch (_) {
-                    clearTimeout(timer);
-                    return null;
+                    fillVillages();
+                    badge.textContent = `✅ ${records.length} रिकॉर्ड लोड`;
+                    toast(`${records.length} रिकॉर्ड सफलतापूर्वक लोड हुए`, 'success');
+                },
+                error: function(err) {
+                    badge.innerHTML = `❌ लोड विफल &nbsp;<button onclick="loadData()" style="background:#1a1a6e;color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer;font-weight:700;">🔄 पुनः प्रयास</button>`;
+                    toast('नेटवर्क त्रुटि — कृपया इंटरनेट जांचें', 'error');
                 }
-            }
-
-            let csvText = null;
-            for (const url of URLS) {
-                // Try each proxy up to 2 times before moving to next
-                for (let attempt = 0; attempt < 2; attempt++) {
-                    csvText = await tryFetch(url);
-                    if (csvText) break;
-                    await new Promise(r => setTimeout(r, 800)); // small wait before retry
-                }
-                if (csvText) break;
-            }
-
-            if (!csvText) {
-                document.getElementById('recordCountBadge').innerHTML =
-                    `❌ लोड विफल &nbsp;<button onclick="loadData()" style="background:#1a1a6e;color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer;font-weight:700;">🔄 पुनः प्रयास</button>`;
-                toast('डेटा लोड विफल — "पुनः प्रयास" बटन दबाएं', 'error');
-                return;
-            }
-
-            records = parseCSV(csvText);
-            fillVillages();
-            document.getElementById('recordCountBadge').textContent = `✅ ${records.length} रिकॉर्ड लोड`;
-            toast(`${records.length} रिकॉर्ड सफलतापूर्वक लोड हुए`, 'success');
-        }
-
-
-        function parseCSV(text) {
-            const rows = []; let row = []; let field = ''; let inQ = false;
-            for (let i = 0; i < text.length; i++) {
-                const c = text[i], n = text[i + 1];
-                if (inQ) {
-                    if (c === '"' && n === '"') { field += '"'; i++; }
-                    else if (c === '"') inQ = false;
-                    else field += c;
-                } else {
-                    if (c === '"') inQ = true;
-                    else if (c === ',') { row.push(field.trim()); field = ''; }
-                    else if (c === '\n' || c === '\r') {
-                        row.push(field.trim());
-                        if (row.length > 1) rows.push(row);
-                        row = []; field = '';
-                        if (c === '\r' && n === '\n') i++;
-                    } else field += c;
-                }
-            }
-            if (row.length || field) { row.push(field.trim()); rows.push(row); }
-            const h = rows[0];
-            return rows.slice(1).map((r, i) => {
-                const o = {}; h.forEach((k, j) => o[k] = r[j]);
-                return {
-                    id: i + 1,
-                    v: o['ग्राम'] || '',
-                    kn: o['खसरा नंबर'] || '',
-                    bn: o['बसरा नंबर'] || '',
-                    owner: (o['भूमिस्वामी का नाम'] || 'अज्ञात').replace(/\n/g, ' '),
-                    area: parseFloat(o['क्षेत्रफल'] || 0).toFixed(3),
-                    type: o['सिंचित / असिंचित'] || '',
-                    nistar: o['निस्तार पत्रक विवरण'] || ''
-                };
             });
         }
 
@@ -944,7 +899,9 @@
   td { font-weight:600; color:#1a1a1a; }
   .footer { margin-top:30px; text-align:center; font-size:11px; color:#aaa; }
   @media print { body { padding:20px; } }
-</style></head><body>
+</style>    <!-- PapaParse for ultra-fast CSV streaming -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head><body>
 <h1>🌾 भूमि रिकॉर्ड विवरण</h1>
 <p class="subtitle">${r.v} — खसरा ${r.kn} | दिनांक: ${new Date().toLocaleDateString('hi-IN')}</p>
 <div class="badges">
@@ -1004,7 +961,9 @@
   th { background:#1a1a6e; color:#fff; font-weight:700; font-size:13px; }
   .footer { margin-top:24px; text-align:center; font-size:11px; color:#aaa; border-top:1px solid #e2e8f0; padding-top:12px; }
   @media print { body { padding:15px; } }
-</style></head><body>
+</style>    <!-- PapaParse for ultra-fast CSV streaming -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head><body>
 <h1>🌾 बसरा पोर्टफोलियो रिपोर्ट</h1>
 <p class="subtitle">${village} — बसरा ${basraNo} | भूमिस्वामी: ${owner} | दिनांक: ${new Date().toLocaleDateString('hi-IN')}</p>
 <div class="summary">
@@ -1075,7 +1034,9 @@
 
   .footer { margin-top:24px; text-align:center; font-size:11px; color:#aaa; border-top:1px solid #e2e8f0; padding-top:12px; }
   @media print { body { padding:15px; } }
-</style></head><body>
+</style>    <!-- PapaParse for ultra-fast CSV streaming -->
+    <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
+</head><body>
 
 <h1>🌾 किसान पोर्टफोलियो रिपोर्ट</h1>
 <p class="subtitle">${village} | भूमिस्वामी: ${owner} | दिनांक: ${new Date().toLocaleDateString('hi-IN')}</p>
