@@ -821,15 +821,15 @@
                 const card = document.createElement('div');
                 card.className = 'result-card';
                 card.style.animationDelay = `${idx * 0.06}s`;
-                const hdrClass = `card-header-${currentTab}`;
+                const hdrClass = currentTab === 'nam' ? 'card-header-khasra' : `card-header-${currentTab}`;
                 const typeBadge = r.type.includes('असिंचित') ? 'asinchai' : 'sinchai';
                 card.innerHTML = `
         <div class="${hdrClass}" style="padding:16px 20px; display:flex; justify-content:space-between; align-items:flex-start;">
           <div>
             <div style="font-size:10px; font-weight:700; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:4px;">
-              ${currentTab === 'khasra' ? 'खसरा नंबर' : currentTab === 'basra' ? 'बसरा नंबर' : 'भूमिस्वामी'}
+              ${currentTab === 'khasra' ? 'खसरा नंबर' : currentTab === 'basra' ? 'बसरा नंबर' : 'खसरा नंबर'}
             </div>
-            <div class="card-kn" style="color:#fff;">${currentTab === 'khasra' ? r.kn : r.bn}</div>
+            <div class="card-kn" style="color:#fff;">${currentTab === 'basra' ? r.bn : r.kn}</div>
             <div style="font-size:13px; color:rgba(255,255,255,0.7); margin-top:4px; font-weight:600;">${r.v}</div>
           </div>
           <button onclick="event.stopPropagation();printSingleRecord(${JSON.stringify(r).replace(/"/g, '&quot;')})" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);color:#fff;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">🖨 Print</button>
