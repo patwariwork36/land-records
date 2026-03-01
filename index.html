@@ -511,6 +511,9 @@
                 <button class="tab-btn" id="tab-basra" onclick="switchTab('basra')">
                     👥 बसरा खोज
                 </button>
+                <button class="tab-btn" id="tab-nam" onclick="switchTab('nam')">
+                    👤 नाम खोज
+                </button>
                 <button class="tab-btn" id="tab-dashboard" onclick="switchTab('dashboard')">
                     📊 डैशबोर्ड
                 </button>
@@ -546,6 +549,14 @@
                                 <option value="" disabled selected>— पहले ग्राम चुनें —</option>
                             </select>
                         </div>
+                    </div>
+
+                    <!-- Nam Input -->
+                    <div id="namGroup" style="display:none;">
+                        <label class="form-label">👤 भूमिस्वामी का नाम</label>
+                        <input type="text" id="namVal" list="farmerList" class="form-input"
+                            placeholder="नाम टाइप करें या चुनें" disabled>
+                        <datalist id="farmerList"></datalist>
                     </div>
 
                     <!-- Button -->
@@ -722,10 +733,12 @@
             document.getElementById('searchForm').closest('.search-card').style.display = isDash ? 'none' : '';
             document.getElementById('khasraGroup').style.display = tab === 'khasra' ? '' : 'none';
             document.getElementById('basraGroup').style.display = tab === 'basra' ? '' : 'none';
+            document.getElementById('namGroup').style.display = tab === 'nam' ? '' : 'none';
 
             // Tab buttons
             document.getElementById('tab-khasra').className = 'tab-btn' + (tab === 'khasra' ? ' active' : '');
             document.getElementById('tab-basra').className = 'tab-btn' + (tab === 'basra' ? ' active' : '');
+            document.getElementById('tab-nam').className = 'tab-btn' + (tab === 'nam' ? ' active' : '');
             document.getElementById('tab-dashboard').className = 'tab-btn' + (tab === 'dashboard' ? ' active' : '');
 
             // Show/hide results and dashboard panels
@@ -738,8 +751,8 @@
                 return;
             }
 
-            // If village already chosen, populate basra
-            if (tab === 'basra') {
+            // If village already chosen, populate basra and famerList
+            if (tab === 'basra' || tab === 'nam') {
                 const v = document.getElementById('villageInput').value;
                 if (v) document.getElementById('villageInput').dispatchEvent(new Event('change'));
             }
@@ -749,18 +762,26 @@
         function handleSearch(e) {
             e.preventDefault();
             const v = document.getElementById('villageInput').value;
-            const val = currentTab === 'khasra'
-                ? document.getElementById('khasraVal').value.trim()
-                : document.getElementById('basraVal').value;
+            let val = '';
+
+            if (currentTab === 'khasra') val = document.getElementById('khasraVal').value.trim();
+            else if (currentTab === 'basra') val = document.getElementById('basraVal').value;
+            else if (currentTab === 'nam') val = document.getElementById('namVal').value.trim();
 
             if (!v) { toast('कृपया ग्राम चुनें', 'error'); return; }
-            if (!val) { toast(`कृपया ${currentTab === 'khasra' ? 'खसरा' : 'बसरा'} नंबर चुनें/दर्ज करें`, 'error'); return; }
+            if (!val) {
+                const lbl = currentTab === 'khasra' ? 'खसरा नंबर' : currentTab === 'basra' ? 'बसरा नंबर' : 'भूमिस्वामी का नाम';
+                toast(`कृपया ${lbl} चुनें/दर्ज करें`, 'error');
+                return;
+            }
 
             setLoading(true);
             setTimeout(() => {
-                const found = currentTab === 'khasra'
-                    ? records.filter(r => r.v === v && r.kn == val)
-                    : records.filter(r => r.v === v && r.bn == val);
+                let found = [];
+                if (currentTab === 'khasra') found = records.filter(r => r.v === v && r.kn == val);
+                else if (currentTab === 'basra') found = records.filter(r => r.v === v && r.bn == val);
+                else if (currentTab === 'nam') found = records.filter(r => r.v === v && r.owner === val);
+
                 setLoading(false);
                 renderResults(found, v, val);
             }, 60);
@@ -786,18 +807,29 @@
             emp.style.display = 'none';
             toast(`${found.length} रिकॉर्ड मिले`, 'success');
 
-            // Portfolio banner for basra
-            if (currentTab === 'basra') {
+            // Portfolio banner for basra or nam
+            if (currentTab === 'basra' || currentTab === 'nam') {
                 const totalArea = found.reduce((s, r) => s + parseFloat(r.area), 0).toFixed(3);
                 const banner = document.createElement('div');
                 banner.className = 'portfolio-banner';
                 banner.style.marginBottom = '24px';
+                
+                const subtitle = currentTab === 'basra' 
+                    ? `ग्राम: ${v} &nbsp;|&nbsp; बसरा: ${val}`
+                    : `ग्राम: ${v} &nbsp;|&nbsp; भूमिस्वामी: ${val}`;
+                    
+                const ownerName = currentTab === 'basra' ? found[0].owner : val;
+                
+                const printFn = currentTab === 'basra'
+                    ? `printPortfolio('${escJS(ownerName)}','${escJS(v)}','${escJS(val)}')`
+                    : `printFarmerPortfolio('${escJS(ownerName)}','${escJS(v)}')`;
+
                 banner.innerHTML = `
         <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;">
           <div>
             <div style="font-size:11px; font-weight:700; opacity:0.6; text-transform:uppercase; letter-spacing:0.1em; margin-bottom:6px;">भूमिस्वामी पोर्टफोलियो</div>
-            <div style="font-size:22px; font-weight:900; line-height:1.1;">${found[0].owner}</div>
-            <div style="margin-top:6px; opacity:0.75; font-size:14px;">ग्राम: ${v} &nbsp;|&nbsp; बसरा: ${val}</div>
+            <div style="font-size:22px; font-weight:900; line-height:1.1;">${ownerName}</div>
+            <div style="margin-top:6px; opacity:0.75; font-size:14px;">${subtitle}</div>
           </div>
           <div style="display:flex; gap:12px; flex-wrap:wrap;">
             <div class="pf-stat">
@@ -809,7 +841,7 @@
               <div class="pf-stat-val">${totalArea} <span style="font-size:14px;font-weight:600;opacity:0.7;">हे.</span></div>
             </div>
           </div>
-          <button onclick="printPortfolio('${escJS(found[0].owner)}','${escJS(v)}','${escJS(val)}')" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;align-self:center;">🖨 Portfolio Print</button>
+          <button onclick="${printFn}" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.4);color:#fff;border-radius:10px;padding:8px 18px;font-size:13px;font-weight:700;cursor:pointer;white-space:nowrap;align-self:center;">🖨 Portfolio Print</button>
           
         </div>`;
                 res.appendChild(banner);
@@ -828,7 +860,7 @@
         <div class="${hdrClass}" style="padding:16px 20px; display:flex; justify-content:space-between; align-items:flex-start;">
           <div>
             <div style="font-size:10px; font-weight:700; color:rgba(255,255,255,0.65); text-transform:uppercase; letter-spacing:0.1em; margin-bottom:4px;">
-              ${currentTab === 'khasra' ? 'खसरा नंबर' : 'बसरा नंबर'}
+              ${currentTab === 'khasra' ? 'खसरा नंबर' : currentTab === 'basra' ? 'बसरा नंबर' : 'भूमिस्वामी'}
             </div>
             <div class="card-kn" style="color:#fff;">${currentTab === 'khasra' ? r.kn : r.bn}</div>
             <div style="font-size:13px; color:rgba(255,255,255,0.7); margin-top:4px; font-weight:600;">${r.v}</div>
@@ -975,6 +1007,94 @@
 </table>
 <p class="footer">भूमि रिकॉर्ड डैशबोर्ड — हल्का 43 एवं 28 | कम्प्यूटर जनित रिकॉर्ड — सत्यापन हेतु पटवारी कार्यालय से संपर्क करें</p>
 <script>window.onload=function(){window.print();}<\/script>
+</body></html>`);
+            pw.document.close();
+        }
+
+        // ─── Farmer Portfolio Print ───────────────────────────────
+        function printFarmerPortfolio(owner, village) {
+            const farmerRecs = records.filter(r => r.v === village && r.owner === owner);
+            if (!farmerRecs.length) return;
+
+            const totalArea = farmerRecs.reduce((s, r) => s + parseFloat(r.area || 0), 0).toFixed(3);
+            const sinchai   = farmerRecs.filter(r => r.type && r.type.includes('सिंचित') && !r.type.includes('असिंचित')).length;
+            const asinchai  = farmerRecs.length - sinchai;
+
+            // Optional: Get unique basras logic
+            const uniqueBasras = [...new Set(farmerRecs.map(r => r.bn).filter(Boolean))].join(', ');
+
+            const rowsHtml = farmerRecs.map((r, i) => `
+              <tr style="background:${i % 2 === 0 ? '#f8fafc' : '#fff'}">
+                <td style="text-align:center;font-weight:800;">${i + 1}</td>
+                <td style="font-weight:800;text-align:center;">${r.kn}</td>
+                <td style="text-align:center;">${r.bn}</td>
+                <td style="text-align:center;">${r.area}</td>
+                <td>${r.type || '—'}</td>
+                <td>${r.nistar || '—'}</td>
+              </tr>`).join('');
+
+            const pw = window.open('', '_blank');
+            if (!pw) { toast('Popup blocked! Allow popups and try again.', 'error'); return; }
+
+            pw.document.write(`<!DOCTYPE html>
+<html lang="hi"><head>
+<meta charset="UTF-8">
+<title>किसान पोर्टफोलियो – ${village} – ${owner}</title>
+<link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
+<style>
+  body { font-family:'Noto Sans Devanagari','Inter',sans-serif; padding:30px; color:#1a1a1a; background:#fff; }
+  h1   { text-align:center; font-size:22px; font-weight:800; margin-bottom:4px; color:#1a1a6e; }
+  .subtitle { text-align:center; font-size:14px; color:#555; margin-bottom:20px; }
+
+  /* Summary strip */
+  .summary { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:24px; justify-content:center; }
+  .summary-item { background:#f0f4ff; border:1px solid #d1d9ff; border-radius:10px; padding:12px 20px; text-align:center; min-width:100px; }
+  .summary-item .val { font-size:22px; font-weight:900; color:#1a1a6e; }
+  .summary-item .lbl { font-size:11px; color:#64748b; font-weight:700; text-transform:uppercase; letter-spacing:0.05em; margin-top:2px; }
+  .green         { background:#d1fae5; border-color:#6ee7b7; }
+  .green  .val   { color:#065f46; }
+  .orange        { background:#ffedd5; border-color:#fdba74; }
+  .orange .val   { color:#9a3412; }
+
+  /* Table */
+  table   { width:100%; border-collapse:collapse; font-size:13px; }
+  th, td  { border:1px solid #e2e8f0; padding:10px 14px; text-align:left; vertical-align:middle; }
+  th      { background:#1a1a6e; color:#fff; font-weight:700; font-size:13px; text-align:center; }
+
+  .footer { margin-top:24px; text-align:center; font-size:11px; color:#aaa; border-top:1px solid #e2e8f0; padding-top:12px; }
+  @media print { body { padding:15px; } }
+</style></head><body>
+
+<h1>🌾 किसान पोर्टफोलियो रिपोर्ट</h1>
+<p class="subtitle">${village} | भूमिस्वामी: ${owner} | दिनांक: ${new Date().toLocaleDateString('hi-IN')}</p>
+${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;margin-bottom:20px;color:#059669;"><strong>संबंधित बसरा:</strong> ${uniqueBasras}</p>` : ''}
+
+<div class="summary">
+  <div class="summary-item">          <div class="val">${farmerRecs.length}</div><div class="lbl">कुल खसरे</div></div>
+  <div class="summary-item">          <div class="val">${totalArea} हे.</div> <div class="lbl">कुल क्षेत्रफल</div></div>
+  <div class="summary-item green">   <div class="val">${sinchai}</div>          <div class="lbl">सिंचित</div></div>
+  <div class="summary-item orange">  <div class="val">${asinchai}</div>         <div class="lbl">असिंचित</div></div>
+</div>
+
+<table>
+  <thead>
+    <tr>
+      <th>#</th>
+      <th>खसरा</th>
+      <th>बसरा</th>
+      <th>क्षेत्रफल (हे.)</th>
+      <th>भूमि प्रकार</th>
+      <th>निस्तार विवरण</th>
+    </tr>
+  </thead>
+  <tbody>${rowsHtml}</tbody>
+</table>
+
+<p class="footer">
+  भूमि रिकॉर्ड डैशबोर्ड — हल्का 43 एवं 28 |
+  कम्प्यूटर जनित रिकॉर्ड — सत्यापन हेतु पटवारी कार्यालय से संपर्क करें
+</p>
+<script>window.onload = function() { window.print(); }<\/script>
 </body></html>`);
             pw.document.close();
         }
