@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="hi">
 
@@ -598,30 +597,43 @@
             Toastify({ text: msg, duration: 3500, gravity: 'top', position: 'right', style: { background: bg[type] || bg.info, borderRadius: '10px', fontWeight: '700', fontSize: '14px' } }).showToast();
         }
 
-        // ── CSV Loader with CORS proxy fallback ────────
+        // ── CSV Loader with robust proxy chain ─────────
         async function loadData() {
             document.getElementById('recordCountBadge').textContent = '⏳ डेटा लोड हो रहा है...';
 
-            // Multiple fetch strategies: direct → proxy1 → proxy2
             const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7w0RI9RMbD3vx841C6CHzFyHwwbX2L5zyhjabc2ov7AvR7OWzJfXgvbiPvV6oXvhJZj5RCmcOzq2r/pub?gid=1832973148&single=true&output=csv";
+
+            // Proxy-first order (Google redirects break direct CORS fetch)
             const URLS = [
-                SHEET_URL,
                 `https://api.allorigins.win/raw?url=${encodeURIComponent(SHEET_URL)}`,
-                `https://corsproxy.io/?${encodeURIComponent(SHEET_URL)}`
+                `https://corsproxy.io/?${encodeURIComponent(SHEET_URL)}`,
+                SHEET_URL  // direct last (works if CORS allows & redirect is followed)
             ];
+
+            async function tryFetch(url) {
+                const controller = new AbortController();
+                const timer = setTimeout(() => controller.abort(), 8000); // 8s timeout
+                try {
+                    const res = await fetch(url, {
+                        cache: 'no-cache',
+                        redirect: 'follow',
+                        signal: controller.signal
+                    });
+                    clearTimeout(timer);
+                    if (!res.ok) return null;
+                    const text = await res.text();
+                    // Validate: must be real CSV data (has Hindi header columns)
+                    return (text.includes('ग्राम') || text.includes(',')) && text.length > 500 ? text : null;
+                } catch (_) {
+                    clearTimeout(timer);
+                    return null;
+                }
+            }
 
             let csvText = null;
             for (const url of URLS) {
-                try {
-                    const res = await fetch(url, { cache: 'no-cache' });
-                    if (!res.ok) continue;
-                    const text = await res.text();
-                    // Validate it looks like CSV (has commas/newlines)
-                    if (text.includes(',') && text.length > 100) {
-                        csvText = text;
-                        break;
-                    }
-                } catch (_) { /* try next */ }
+                csvText = await tryFetch(url);
+                if (csvText) break;
             }
 
             if (!csvText) {
@@ -635,6 +647,7 @@
             document.getElementById('recordCountBadge').textContent = `✅ ${records.length} रिकॉर्ड लोड`;
             toast(`${records.length} रिकॉर्ड सफलतापूर्वक लोड हुए`, 'success');
         }
+
 
         function parseCSV(text) {
             const rows = []; let row = []; let field = ''; let inQ = false;
