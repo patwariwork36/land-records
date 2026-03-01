@@ -1,4 +1,3 @@
-
 <!DOCTYPE html>
 <html lang="hi">
 
@@ -604,27 +603,26 @@
 
             const SHEET_URL = "https://docs.google.com/spreadsheets/d/e/2PACX-1vQ7w0RI9RMbD3vx841C6CHzFyHwwbX2L5zyhjabc2ov7AvR7OWzJfXgvbiPvV6oXvhJZj5RCmcOzq2r/pub?gid=1832973148&single=true&output=csv";
 
-            // Proxy-first order (Google redirects break direct CORS fetch)
+            // 6 proxy fallbacks in order of reliability
             const URLS = [
                 `https://api.allorigins.win/raw?url=${encodeURIComponent(SHEET_URL)}`,
                 `https://corsproxy.io/?${encodeURIComponent(SHEET_URL)}`,
-                SHEET_URL  // direct last (works if CORS allows & redirect is followed)
+                `https://thingproxy.freeboard.io/fetch/${SHEET_URL}`,
+                `https://api.codetabs.com/v1/proxy?quest=${encodeURIComponent(SHEET_URL)}`,
+                `https://htmldriven.com/fetch?url=${encodeURIComponent(SHEET_URL)}`,
+                SHEET_URL  // direct last attempt
             ];
 
             async function tryFetch(url) {
                 const controller = new AbortController();
-                const timer = setTimeout(() => controller.abort(), 8000); // 8s timeout
+                const timer = setTimeout(() => controller.abort(), 10000); // 10s timeout
                 try {
-                    const res = await fetch(url, {
-                        cache: 'no-cache',
-                        redirect: 'follow',
-                        signal: controller.signal
-                    });
+                    const res = await fetch(url, { cache: 'no-cache', redirect: 'follow', signal: controller.signal });
                     clearTimeout(timer);
                     if (!res.ok) return null;
                     const text = await res.text();
-                    // Validate: must be real CSV data (has Hindi header columns)
-                    return (text.includes('ग्राम') || text.includes(',')) && text.length > 500 ? text : null;
+                    // Validate: must contain real CSV data
+                    return text.includes('ग्राम') && text.length > 500 ? text : null;
                 } catch (_) {
                     clearTimeout(timer);
                     return null;
@@ -633,13 +631,19 @@
 
             let csvText = null;
             for (const url of URLS) {
-                csvText = await tryFetch(url);
+                // Try each proxy up to 2 times before moving to next
+                for (let attempt = 0; attempt < 2; attempt++) {
+                    csvText = await tryFetch(url);
+                    if (csvText) break;
+                    await new Promise(r => setTimeout(r, 800)); // small wait before retry
+                }
                 if (csvText) break;
             }
 
             if (!csvText) {
-                document.getElementById('recordCountBadge').textContent = '❌ लोड विफल';
-                toast('डेटा लोड विफल — इंटरनेट कनेक्शन जांचें', 'error');
+                document.getElementById('recordCountBadge').innerHTML =
+                    `❌ लोड विफल &nbsp;<button onclick="loadData()" style="background:#1a1a6e;color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer;font-weight:700;">🔄 पुनः प्रयास</button>`;
+                toast('डेटा लोड विफल — "पुनः प्रयास" बटन दबाएं', 'error');
                 return;
             }
 
