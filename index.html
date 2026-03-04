@@ -830,8 +830,16 @@
             records = results.data.map((o, i) => {
                 // owner: raw CSV value (full, for display in khasra/basra results)
                 let ownerRaw = o['भूमिस्वामी का नाम'] || 'अज्ञात';
-                // ownerKey: cleaned single-line name (for naam search dropdown & matching)
+                // ownerKey: cleaned single-line (for escJS / display)
                 let ownerKey = ownerRaw.replace(/\r/g, '').replace(/\n/g, ' ').trim();
+                // ownerNames: all individual names extracted (for naam search datalist & matching)
+                const nameMatches = [...ownerRaw.matchAll(/नाम\s*[-–]\s*([^\n\r]+)/g)];
+                let ownerNames = nameMatches.map(m => m[1].trim()).filter(Boolean);
+                if (ownerNames.length === 0) {
+                    // Fallback: use first line without leading (1) prefix
+                    const fallback = ownerRaw.split(/\r?\n/)[0].replace(/^\(\d+\)/, '').trim();
+                    if (fallback) ownerNames = [fallback];
+                }
 
                 return {
                     id: i + 1,
@@ -840,6 +848,7 @@
                     bn: o['बसरा नंबर'] || '',
                     owner: ownerRaw || 'अज्ञात',
                     ownerKey: ownerKey || 'अज्ञात',
+                    ownerNames: ownerNames.length ? ownerNames : ['अज्ञात'],
                     area: parseFloat(o['क्षेत्रफल'] || 0).toFixed(3),
                     type: o['सिंचित / असिंचित'] || '',
                     nistar: o['निस्तार पत्रक विवरण'] || '',
@@ -925,7 +934,10 @@
             const farmerList = document.getElementById('farmerList');
             const namInput = document.getElementById('namVal');
             if (farmerList && namInput) {
-                const names = [...new Set(records.filter(r => r.v === v).map(r => r.ownerKey).filter(Boolean))].sort((a, b) => a.localeCompare(b, 'hi'));
+                // Collect ALL individual owner names across all records for this village
+                const names = [...new Set(
+                    records.filter(r => r.v === v).flatMap(r => r.ownerNames).filter(Boolean)
+                )].sort((a, b) => a.localeCompare(b, 'hi'));
                 farmerList.innerHTML = '';
                 names.forEach(n => { const o = document.createElement('option'); o.value = n; farmerList.appendChild(o); });
                 namInput.disabled = false;
@@ -992,7 +1004,7 @@
                 let found = [];
                 if (currentTab === 'khasra') found = records.filter(r => r.v === v && r.kn == val);
                 else if (currentTab === 'basra') found = records.filter(r => r.v === v && r.bn == val);
-                else if (currentTab === 'nam') found = records.filter(r => r.v === v && r.ownerKey === val);
+                else if (currentTab === 'nam') found = records.filter(r => r.v === v && r.ownerNames.includes(val));
 
                 setLoading(false);
                 renderResults(found, v, val);
@@ -1234,7 +1246,7 @@
 
         // ─── Farmer Portfolio Print ───────────────────────────────
         function printFarmerPortfolio(owner, village) {
-            const farmerRecs = records.filter(r => r.v === village && r.ownerKey === owner);
+            const farmerRecs = records.filter(r => r.v === village && r.ownerNames.includes(owner));
             if (!farmerRecs.length) return;
 
             const totalArea = farmerRecs.reduce((s, r) => s + parseFloat(r.area || 0), 0).toFixed(3);
