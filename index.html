@@ -1110,7 +1110,7 @@
             res.appendChild(grid);
         }
 
-        function escJS(s) { return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'"); }
+        function escJS(s) { return String(s).replace(/\\/g, '\\\\').replace(/'/g, "\\'").replace(/\r/g, '').replace(/\n/g, ' '); }
 
         // ══════════════════════════════════════════════
         // �️ PRINT / PDF  (Lovable-style: window.open + window.print)
