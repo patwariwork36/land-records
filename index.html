@@ -1006,17 +1006,14 @@
                 else if (currentTab === 'basra') found = records.filter(r => r.v === v && r.bn == val);
                 else if (currentTab === 'nam') {
                     const nval = val.replace(/\s+/g, ' ').trim();
-                    // Step 1: exact name match (ownerNames contains the searched name)
+                    // Step 1: exact name match
                     const nameMatched = records.filter(r => r.v === v && r.ownerNames.includes(nval));
-                    // Step 2: collect unique basra numbers from matched records
+                    // Step 2: collect basra numbers from matched records
                     const basraSet = new Set(nameMatched.map(r => r.bn).filter(Boolean));
-                    // Step 3: expand — show ALL khasras from those basra numbers
-                    if (basraSet.size > 0) {
-                        found = records.filter(r => r.v === v && basraSet.has(r.bn));
-                    } else {
-                        // Fallback: partial text search if no exact name match
-                        found = records.filter(r => r.v === v && r.ownerKey.includes(nval));
-                    }
+                    // Step 3: show ALL khasras of those basras
+                    found = basraSet.size > 0
+                        ? records.filter(r => r.v === v && basraSet.has(r.bn))
+                        : nameMatched; // if no basra, just show name-matched records
                 }
 
                 setLoading(false);
@@ -1259,13 +1256,13 @@
 
         // ─── Farmer Portfolio Print ───────────────────────────────
         function printFarmerPortfolio(owner, village) {
-            // Same logic as search: exact name match → get basras → expand to all khasras
+            // Exact name match → basra numbers → all khasras of those basras
             const ownerNorm = owner.replace(/\s+/g, ' ').trim();
             const nameMatched = records.filter(r => r.v === village && r.ownerNames.includes(ownerNorm));
             const basraSet = new Set(nameMatched.map(r => r.bn).filter(Boolean));
             const farmerRecs = basraSet.size > 0
                 ? records.filter(r => r.v === village && basraSet.has(r.bn))
-                : records.filter(r => r.v === village && r.ownerKey.includes(ownerNorm));
+                : nameMatched;
             if (!farmerRecs.length) return;
 
             const totalArea = farmerRecs.reduce((s, r) => s + parseFloat(r.area || 0), 0).toFixed(3);
