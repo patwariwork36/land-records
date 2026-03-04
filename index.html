@@ -1162,6 +1162,8 @@
   <tr><th>👤 भूमिस्वामी</th><td>${r.owner}</td></tr>
   <tr><th>📐 क्षेत्रफल (हेक्टेयर)</th><td>${r.area} हे.</td></tr>
   <tr><th>🌱 भूमि का प्रकार</th><td>${r.type || '—'}</td></tr>
+  ${r.charai ? `<tr><th>🌿 चराई भूमि</th><td>${r.charai}</td></tr>` : ''}
+  ${r.ceiling ? `<tr><th>⚖️ सीलिंग भूमि</th><td>${r.ceiling}</td></tr>` : ''}
   ${r.nistar ? `<tr><th>📝 निस्तार विवरण</th><td>${r.nistar}</td></tr>` : ''}
 </table>
 <p class="footer">भूमि रिकॉर्ड डैशबोर्ड — हल्का 43 एवं 28</p>
@@ -1184,6 +1186,8 @@
                 <td>${r.owner}</td>
                 <td style="text-align:center;">${r.area}</td>
                 <td>${r.type || '—'}</td>
+                <td>${r.charai || '—'}</td>
+                <td>${r.ceiling || '—'}</td>
                 <td>${r.nistar || '—'}</td>
               </tr>`).join('');
 
@@ -1219,7 +1223,7 @@
   <div class="summary-item orange"><div class="val">${asinchai}</div><div class="lbl">असिंचित</div></div>
 </div>
 <table>
-  <thead><tr><th>#</th><th>खसरा</th><th>भूमिस्वामी</th><th>क्षेत्रफल (हे.)</th><th>भूमि प्रकार</th><th>निस्तार विवरण</th></tr></thead>
+  <thead><tr><th>#</th><th>खसरा</th><th>भूमिस्वामी</th><th>क्षेत्रफल (हे.)</th><th>भूमि प्रकार</th><th>चराई भूमि</th><th>सीलिंग भूमि</th><th>निस्तार विवरण</th></tr></thead>
   <tbody>${rowsHtml}</tbody>
 </table>
 <p class="footer">भूमि रिकॉर्ड डैशबोर्ड — हल्का 43 एवं 28 | कम्प्यूटर जनित रिकॉर्ड — सत्यापन हेतु पटवारी कार्यालय से संपर्क करें</p>
@@ -1247,6 +1251,8 @@
                 <td style="text-align:center;">${r.bn}</td>
                 <td style="text-align:center;">${r.area}</td>
                 <td>${r.type || '—'}</td>
+                <td>${r.charai || '—'}</td>
+                <td>${r.ceiling || '—'}</td>
                 <td>${r.nistar || '—'}</td>
               </tr>`).join('');
 
@@ -1301,6 +1307,8 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
       <th>बसरा</th>
       <th>क्षेत्रफल (हे.)</th>
       <th>भूमि प्रकार</th>
+      <th>चराई भूमि</th>
+      <th>सीलिंग भूमि</th>
       <th>निस्तार विवरण</th>
     </tr>
   </thead>
