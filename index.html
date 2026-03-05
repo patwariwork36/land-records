@@ -878,40 +878,36 @@
                 toast(msg || 'नेटवर्क त्रुटि — कृपया इंटरनेट जांचें', 'error');
             }
 
-            // Primary: fetch() then PapaParse (works reliably from file:// and http://)
-            fetch(SHEET_URL)
-                .then(res => {
-                    if (!res.ok) throw new Error('HTTP ' + res.status);
-                    return res.text();
-                })
-                .then(csvText => {
-                    const result = Papa.parse(csvText, {
-                        header: true,
-                        skipEmptyLines: 'greedy'
-                    });
-                    if (processCSVResults(result)) {
-                        onSuccess();
-                    } else {
-                        onError('डेटा पार्स विफल — कॉलम की जांच करें');
-                    }
-                })
-                .catch(fetchErr => {
-                    // Fallback: let PapaParse download directly (no worker to avoid file:// issues)
-                    console.warn('fetch failed, trying PapaParse direct download:', fetchErr.message);
-                    Papa.parse(SHEET_URL, {
-                        download: true,
-                        header: true,
-                        worker: false,   // worker:true breaks on file:// — always false
-                        skipEmptyLines: 'greedy',
-                        complete: function (results) {
-                            if (processCSVResults(results)) {
-                                onSuccess();
-                            } else {
-                                onError('डेटा लोड विफल — "पुनः प्रयास" बटन दबाएं');
-                            }
-                        },
-                        error: function () { onError('नेटवर्क त्रुटि — कृपया इंटरनेट जांचें'); }
-                    });
+            // CORS-safe proxy chain for file:// protocol support
+            function tryParse(csvText) {
+                const r = Papa.parse(csvText, { header: true, skipEmptyLines: 'greedy' });
+                return processCSVResults(r);
+            }
+
+            const PROXY1 = 'https://api.allorigins.win/raw?url=' + encodeURIComponent(SHEET_URL);
+            const PROXY2 = 'https://corsproxy.io/?' + encodeURIComponent(SHEET_URL);
+
+            // Step 1: Try allorigins.win proxy
+            fetch(PROXY1)
+                .then(res => { if (!res.ok) throw new Error('p1'); return res.text(); })
+                .then(csv => { if (tryParse(csv)) onSuccess(); else throw new Error('parse'); })
+                .catch(() => {
+                    // Step 2: Try corsproxy.io
+                    fetch(PROXY2)
+                        .then(res => { if (!res.ok) throw new Error('p2'); return res.text(); })
+                        .then(csv => { if (tryParse(csv)) onSuccess(); else throw new Error('parse'); })
+                        .catch(() => {
+                            // Step 3: PapaParse direct download (last resort)
+                            Papa.parse(SHEET_URL, {
+                                download: true, header: true, worker: false,
+                                skipEmptyLines: 'greedy',
+                                complete: function (results) {
+                                    if (processCSVResults(results)) onSuccess();
+                                    else onError('डेटा लोड विफल — "पुनः प्रयास" बटन दबाएं');
+                                },
+                                error: function () { onError('नेटवर्क त्रुटि — कृपया इंटरनेट जांचें'); }
+                            });
+                        });
                 });
         }
 
@@ -1882,6 +1878,7 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
         }
 
         // ── Init ──────────────────────────────────────
+        switchTab('dashboard'); // Ensure dashboard is shown on load (hides search form)
         loadData();
 
     </script>
