@@ -452,14 +452,118 @@
             }
         }
 
-        /* ── Responsive ── */
-        @media (max-width: 640px) {
+        /* ══ RESPONSIVE ══════════════════════════════════════════════ */
+
+        /* ── Tab bar: horizontally scrollable on all small screens ── */
+        .tab-bar-wrap {
+            width: 100%;
+            overflow-x: auto;
+            -webkit-overflow-scrolling: touch;
+            display: flex;
+            justify-content: center;
+            padding-bottom: 4px;
+            /* room for scrollbar on some devices */
+            scrollbar-width: none;
+            /* Firefox */
+        }
+
+        .tab-bar-wrap::-webkit-scrollbar {
+            display: none;
+        }
+
+        /* Chrome/Safari */
+
+        .tab-bar {
+            flex-shrink: 0;
+            /* never shrink — let wrapper scroll instead */
+        }
+
+        /* ── Tablet (≤ 900px) ── */
+        @media (max-width: 900px) {
+            .tab-btn {
+                padding: 10px 18px;
+                font-size: 14px;
+            }
+        }
+
+        /* ── Small tablet / large phone (≤ 680px) ── */
+        @media (max-width: 680px) {
+            .tab-btn {
+                padding: 9px 14px;
+                font-size: 13px;
+                gap: 5px;
+            }
+
             .search-card {
-                padding: 24px 18px;
+                padding: 24px 16px;
             }
 
             .pf-stat-val {
                 font-size: 24px;
+            }
+        }
+
+        /* ── Mobile (≤ 480px) ── */
+        @media (max-width: 480px) {
+
+            /* Header */
+            .emblem {
+                width: 54px;
+                height: 54px;
+                font-size: 26px;
+            }
+
+            /* Tab buttons — even more compact */
+            .tab-btn {
+                padding: 8px 11px;
+                font-size: 12px;
+                gap: 4px;
+                border-radius: 10px;
+            }
+
+            /* Search card */
+            .search-card {
+                padding: 20px 14px;
+            }
+
+            /* Form inputs */
+            .form-select,
+            .form-input {
+                padding: 12px 14px;
+                font-size: 15px;
+            }
+
+            /* Search button */
+            .btn-search {
+                padding: 14px 20px;
+                font-size: 15px;
+            }
+
+            /* Result card grid → single column */
+            #resultsDiv>div[style*="grid"] {
+                grid-template-columns: 1fr !important;
+            }
+
+            /* Bar chart label narrower */
+            .bar-label {
+                width: 90px;
+                font-size: 12px;
+            }
+
+            /* Dashboard section padding */
+            .dash-section {
+                padding: 18px 14px;
+            }
+
+            /* Leaderboard row */
+            .lb-row {
+                padding: 10px 12px;
+                gap: 10px;
+            }
+
+            /* Stats page village cards → single column */
+            #statisticsDiv>div>div[style*="grid"] {
+                grid-template-columns: 1fr !important;
             }
         }
 
@@ -684,10 +788,10 @@
     <!-- ═══════════════════ HEADER ═══════════════════ -->
     <div class="header-gold-bar"></div>
     <header class="site-header">
-        <div style="max-width:900px; margin:0 auto; padding:28px 24px;">
-            <div style="display:flex; align-items:center; gap: 8px; flex-wrap:wrap;">
+        <div style="max-width:900px; margin:0 auto; padding:clamp(16px,4vw,28px) clamp(12px,3vw,24px);">
+            <div style="display:flex; align-items:center; gap:clamp(8px,2vw,16px); flex-wrap:wrap;">
                 <div class="emblem">🌾</div>
-                <div style="flex:1; min-width:200px;">
+                <div style="flex:1; min-width:min(200px,55vw);">
                     <div
                         style="font-size:12px; color:rgba(255,255,255,0.55); font-weight:600; letter-spacing:0.12em; text-transform:uppercase; margin-bottom:4px;">
                         छत्तीसगढ़ शासन – राजस्व विभाग
@@ -712,10 +816,11 @@
     </header>
 
     <!-- ═══════════════════ MAIN ═══════════════════ -->
-    <main style="max-width:900px; margin:0 auto; padding:32px 16px 80px; position:relative; z-index:1;">
+    <main
+        style="max-width:900px; margin:0 auto; padding:clamp(20px,4vw,32px) clamp(12px,3vw,16px) 80px; position:relative; z-index:1;">
 
         <!-- Tab Bar -->
-        <div style="display:flex; justify-content:center; margin-bottom:28px;" class="fade-in">
+        <div class="tab-bar-wrap fade-in" style="margin-bottom:28px;">
             <div class="tab-bar">
                 <button class="tab-btn active" id="tab-dashboard" onclick="switchTab('dashboard')">
                     🏠 डैशबोर्ड
