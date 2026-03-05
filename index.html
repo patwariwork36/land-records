@@ -821,6 +821,16 @@
         let records = [];
         let currentTab = 'dashboard';
 
+        // ── Halka Mapping ──────────────────────────────
+        const HALKA_MAP = {
+            'गबौद': 43, 'तिल्दा': 43,
+            'छड़िया': 28, 'छेरकापुर': 28
+        };
+        function getHalka(village) {
+            const h = HALKA_MAP[village];
+            return h ? `हल्का ${h}` : '';
+        }
+
         // ── Toast ──────────────────────────────────────
         function toast(msg, type = 'success') {
             const bg = { success: 'linear-gradient(to right,#059669,#047857)', error: 'linear-gradient(to right,#dc2626,#b91c1c)', info: 'linear-gradient(to right,#2563eb,#1a1a6e)' };
@@ -1177,7 +1187,7 @@
               ${currentTab === 'khasra' ? 'खसरा नंबर' : currentTab === 'basra' ? 'बसरा नंबर' : 'खसरा नंबर'}
             </div>
             <div class="card-kn" style="color:#fff;">${currentTab === 'basra' ? r.bn : r.kn}</div>
-            <div style="font-size:13px; color:rgba(255,255,255,0.7); margin-top:4px; font-weight:600;">${r.v}</div>
+            <div style="font-size:13px; color:rgba(255,255,255,0.7); margin-top:4px; font-weight:600;">${r.v}${getHalka(r.v) ? ` &nbsp;<span style="background:rgba(255,255,255,0.18);border-radius:6px;padding:2px 8px;font-size:11px;font-weight:800;letter-spacing:0.05em;">${getHalka(r.v)}</span>` : ''}</div>
           </div>
           <button onclick="event.stopPropagation();printSingleRecord(${JSON.stringify(r).replace(/"/g, '&quot;')})" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);color:#fff;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">🖨 Print</button>
         </div>
@@ -1253,12 +1263,12 @@
   @media print { body { padding:20px; } }
 </style></head><body>
 <h1>🌾 भूमि रिकॉर्ड विवरण</h1>
-<p class="subtitle">${r.v} — खसरा ${r.kn} | दिनांक: ${new Date().toLocaleDateString('hi-IN')}</p>
+<p class="subtitle">${r.v}${getHalka(r.v) ? ' (' + getHalka(r.v) + ')' : ''} — खसरा ${r.kn} | दिनांक: ${new Date().toLocaleDateString('hi-IN')}</p>
 <div class="badges">
   <span class="badge ${sinchType}">${r.type || '—'}</span>
 </div>
 <table>
-  <tr><th>🏘️ ग्राम</th><td>${r.v}</td></tr>
+  <tr><th>🏘️ ग्राम</th><td>${r.v}${getHalka(r.v) ? ' &nbsp;<strong>(' + getHalka(r.v) + ')</strong>' : ''}</td></tr>
   <tr><th>📋 खसरा नंबर</th><td>${r.kn}</td></tr>
   <tr><th>📄 बसरा नंबर</th><td>${r.bn}</td></tr>
   <tr><th>👤 भूमिस्वामी</th><td>${r.owner}</td></tr>
@@ -1317,7 +1327,7 @@
   @media print { body { padding:15px; } }
 </style></head><body>
 <h1>🌾 बसरा पोर्टफोलियो रिपोर्ट</h1>
-<p class="subtitle">${village} — बसरा ${basraNo} | भूमिस्वामी: ${owner} | दिनांक: ${new Date().toLocaleDateString('hi-IN')}</p>
+<p class="subtitle">${village}${getHalka(village) ? ' (' + getHalka(village) + ')' : ''} — बसरा ${basraNo} | भूमिस्वामी: ${owner} | दिनांक: ${new Date().toLocaleDateString('hi-IN')}</p>
 <div class="summary">
   <div class="summary-item"><div class="val">${basraRecs.length}</div><div class="lbl">कुल खसरे</div></div>
   <div class="summary-item"><div class="val">${totalArea} हे.</div><div class="lbl">कुल क्षेत्रफल</div></div>
@@ -1397,7 +1407,7 @@
 </style></head><body>
 
 <h1>🌾 किसान पोर्टफोलियो रिपोर्ट</h1>
-<p class="subtitle">${village} | भूमिस्वामी: ${owner} | दिनांक: ${new Date().toLocaleDateString('hi-IN')}</p>
+<p class="subtitle">${village}${getHalka(village) ? ' (' + getHalka(village) + ')' : ''} | भूमिस्वामी: ${owner} | दिनांक: ${new Date().toLocaleDateString('hi-IN')}</p>
 ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;margin-bottom:20px;color:#059669;"><strong>संबंधित बसरा:</strong> ${uniqueBasras}</p>` : ''}
 
 <div class="summary">
