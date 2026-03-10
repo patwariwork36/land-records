@@ -1899,27 +1899,6 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                 </div>
               </div>
 
-              <!-- Top Farmers Leaderboard -->
-              <div class="dash-section" style="margin-bottom:24px;">
-                <div class="dash-section-title">🏆 शीर्ष 5 भूमिस्वामी (क्षेत्रफल अनुसार)</div>
-                ${top5.map(([name, info], i) => {
-                const rankClass = i === 0 ? 'gold' : i === 1 ? 'silver' : i === 2 ? 'bronze' : '';
-                const medal = i === 0 ? '🥇' : i === 1 ? '🥈' : i === 2 ? '🥉' : i + 1;
-                return `
-                  <div class="lb-row" style="animation-delay:${0.05 * i}s;">
-                    <div class="lb-rank ${rankClass}">${medal}</div>
-                    <div style="flex:1;min-width:0;">
-                      <div class="lb-name">${name}</div>
-                      <div style="font-size:11px;color:var(--text-muted);font-weight:600;margin-top:2px;">ग्राम: ${info.village}</div>
-                    </div>
-                    <div class="lb-stat">
-                      <div class="lb-stat-val">${info.area.toFixed(2)} हे.</div>
-                      <div class="lb-stat-lbl">${info.khasras} खसरे</div>
-                    </div>
-                  </div>`;
-            }).join('')}
-              </div>
-
               <!-- Village Search + Cards -->
               <div style="margin-bottom:6px;">
                 <div class="dash-section-title" style="margin-bottom:14px;">🏘️ ग्रामवार विवरण</div>
