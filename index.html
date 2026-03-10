@@ -2026,7 +2026,7 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             <div style="animation:slideUp 0.4s ease both; max-width:900px; margin:0 auto;">
               <div style="display:flex;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:10px;margin-bottom:20px;">
                 <h2 style="font-size:22px;font-weight:900;color:var(--royal);font-family:'Noto Sans Devanagari',sans-serif;">
-                  🏛️ शासकीय भूमि रिकॉर्ड्स
+                  🏛️ शासकीय भूमि रिकॉर्ड्स (हल्का 28 एवं 43)
                 </h2>
               </div>
 
@@ -2037,7 +2037,7 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                     <div>
                         <label class="form-label">🏘️ ग्राम चुनें</label>
                         <div class="select-wrap">
-                            <select id="govVillageSelect" class="form-select">
+                            <select id="govVillageSelect" class="form-select" onchange="populateGovNistarDropdown()">
                                 <option value="" disabled selected>— ग्राम चुनें —</option>
                                 ${grams.map(g => `<option value="${g}">${g}</option>`).join('')}
                             </select>
@@ -2048,10 +2048,21 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                     <div>
                         <label class="form-label">🏞️ भूमि का प्रकार</label>
                         <div class="select-wrap">
-                            <select id="govTypeSelect" class="form-select">
+                            <select id="govTypeSelect" class="form-select" onchange="handleGovTypeChange()">
                                 <option value="" disabled selected>— प्रकार चुनें —</option>
                                 <option value="charai">चराई भूमि</option>
                                 <option value="ceiling">सीलिंग भूमि</option>
+                                <option value="nistar">निस्तार/वाजिबुल अर्ज़ का विवरण (हल्का 28 एवं 43)</option>
+                            </select>
+                        </div>
+                    </div>
+
+                    <!-- Nistar Details -->
+                    <div id="govNistarDiv" style="display:none;">
+                        <label class="form-label">📜 निस्तार विवरण चुनें</label>
+                        <div class="select-wrap">
+                            <select id="govNistarSelect" class="form-select">
+                                <option value="" disabled selected>— पहले ग्राम चुनें —</option>
                             </select>
                         </div>
                     </div>
@@ -2073,6 +2084,18 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                        <button onclick="exportGovTablePDF()" style="background:#dc2626;color:#fff;border:none;border-radius:10px;padding:8px 16px;font-weight:700;font-size:14px;cursor:pointer;box-shadow:0 4px 14px rgba(220,38,38,0.3);display:flex;align-items:center;gap:6px;">
                          🖨️ PDF Print
                        </button>
+                    </div>
+                 </div>
+                 
+                 <!-- Summary Cards -->
+                 <div id="govSummaryCards" style="display:none; gap:14px; margin-bottom:20px; flex-wrap:wrap;">
+                    <div class="stat-chip" style="flex:1; min-width:120px; background:#f0f4ff; border:1px solid #d1d9ff;">
+                        <div class="stat-chip-label" style="color:#1a1a6e; opacity:0.8;">कुल खसरे</div>
+                        <div class="stat-chip-val" id="govSumCount" style="color:#1a1a6e;">0</div>
+                    </div>
+                    <div class="stat-chip" style="flex:1; min-width:120px; background:#f8fafc; border:1px solid #cbd5e1;">
+                        <div class="stat-chip-label" style="color:#0f766e; opacity:0.8;">कुल रकबा (हे.)</div>
+                        <div class="stat-chip-val" id="govSumArea" style="color:#0f766e;">0</div>
                     </div>
                  </div>
                  
@@ -2107,12 +2130,47 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
         let currentGovData = [];
         let currentGovTitle = '';
 
+        function handleGovTypeChange() {
+            const type = document.getElementById('govTypeSelect').value;
+            const nistarDiv = document.getElementById('govNistarDiv');
+            if (type === 'nistar') {
+                nistarDiv.style.display = 'block';
+                populateGovNistarDropdown();
+            } else {
+                nistarDiv.style.display = 'none';
+            }
+        }
+
+        function populateGovNistarDropdown() {
+            const vill = document.getElementById('govVillageSelect').value;
+            const type = document.getElementById('govTypeSelect')?.value;
+            const nistarSelect = document.getElementById('govNistarSelect');
+            if (!nistarSelect) return;
+
+            if (type === 'nistar' && vill) {
+                const vals = [...new Set(records.filter(r => r.v === vill && r.nistar && r.nistar.trim().length > 0 && r.nistar.trim() !== 'नहीं' && r.nistar.trim() !== '-').map(r => r.nistar.trim()))].sort((a, b) => a.localeCompare(b, 'hi'));
+                if (vals.length > 0) {
+                    nistarSelect.innerHTML = `<option value="" disabled selected>— निस्तार विवरण चुनें —</option>` + vals.map(v => `<option value="${v}">${v}</option>`).join('');
+                } else {
+                    nistarSelect.innerHTML = `<option value="" disabled selected>— कोई विवरण नहीं —</option>`;
+                }
+            } else if (!vill) {
+                nistarSelect.innerHTML = `<option value="" disabled selected>— पहले ग्राम चुनें —</option>`;
+            }
+        }
+
         function handleGovSearch() {
             const vill = document.getElementById('govVillageSelect').value;
             const type = document.getElementById('govTypeSelect').value;
 
             if (!vill) { toast('कृपया ग्राम चुनें', 'error'); return; }
             if (!type) { toast('कृपया भूमि का प्रकार चुनें', 'error'); return; }
+
+            let nistarVal = '';
+            if (type === 'nistar') {
+                nistarVal = document.getElementById('govNistarSelect').value;
+                if (!nistarVal) { toast('कृपया निस्तार विवरण चुनें', 'error'); return; }
+            }
 
             // Filter logic
             if (type === 'charai') {
@@ -2123,6 +2181,9 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             } else if (type === 'ceiling') {
                 currentGovTitle = `सीलिंग भूमि रिकॉर्ड्स - ${vill}`;
                 currentGovData = records.filter(r => r.v === vill && r.ceiling && r.ceiling.trim().length > 0 && r.ceiling !== 'नहीं');
+            } else if (type === 'nistar') {
+                currentGovTitle = `निस्तार विवरण: ${nistarVal} - ${vill}`;
+                currentGovData = records.filter(r => r.v === vill && r.nistar && r.nistar.trim() === nistarVal);
             }
 
             // Render table
@@ -2130,6 +2191,7 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             const tbody = document.getElementById('govTableBody');
             const emptyMsg = document.getElementById('govEmptyMsg');
             const titleEl = document.getElementById('govTableTitle');
+            const sumCards = document.getElementById('govSummaryCards');
 
             cont.style.display = 'block';
             titleEl.textContent = `${currentGovTitle} (${currentGovData.length})`;
@@ -2138,11 +2200,19 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             if (currentGovData.length === 0) {
                 emptyMsg.style.display = 'block';
                 document.querySelector('#govTableContainer table').style.display = 'none';
+                if (sumCards) sumCards.style.display = 'none';
                 return;
             }
 
             emptyMsg.style.display = 'none';
             document.querySelector('#govTableContainer table').style.display = 'table';
+
+            if (sumCards) {
+                sumCards.style.display = 'flex';
+                document.getElementById('govSumCount').textContent = currentGovData.length;
+                const totalArea = currentGovData.reduce((s, r) => s + parseFloat(r.area || 0), 0);
+                document.getElementById('govSumArea').textContent = totalArea.toFixed(4);
+            }
 
             // Sorting by khasra (basic numeric sort)
             currentGovData.sort((a, b) => {
