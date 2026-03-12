@@ -1298,7 +1298,7 @@
   .badge-orange { background:#ffedd5; color:#9a3412; }
   table { width:100%; border-collapse:collapse; }
   th,td { border:1px solid #e2e8f0; padding:12px 16px; font-size:14px; text-align:left; vertical-align:middle; }
-  th { background:#f8fafc; font-weight:700; color:#374151; width:38%; }
+  th { background:#f8fafc; font-weight:700; color:#374151; width:38%; text-align:center; }
   td { font-weight:600; color:#1a1a1a; }
   .footer { margin-top:30px; text-align:center; font-size:11px; color:#aaa; }
   @media print { body { padding:20px; } }
@@ -1337,7 +1337,7 @@
                 <td style="text-align:center;font-weight:800;">${i + 1}</td>
                 <td style="font-weight:800;text-align:center;">${r.kn}</td>
                 <td>${r.owner}</td>
-                <td style="text-align:center;">${r.area}</td>
+                <td style="text-align:right;font-weight:800;">${r.area}</td>
                 <td>${r.type || '—'}</td>
                 <td>${r.charai || '—'}</td>
                 <td>${r.ceiling || '—'}</td>
@@ -1363,7 +1363,7 @@
   .orange .val { color:#9a3412; } .orange { background:#ffedd5; border-color:#fdba74; }
   table { width:100%; border-collapse:collapse; font-size:13px; }
   th,td { border:1px solid #e2e8f0; padding:10px 14px; text-align:left; vertical-align:middle; }
-  th { background:#1a1a6e; color:#fff; font-weight:700; font-size:13px; }
+  th { background:#1a1a6e; color:#fff; font-weight:700; font-size:13px; text-align:center; }
   .footer { margin-top:24px; text-align:center; font-size:11px; color:#aaa; border-top:1px solid #e2e8f0; padding-top:12px; }
   @media print { body { padding:15px; } }
 </style></head><body>
@@ -1376,7 +1376,7 @@
   <div class="summary-item orange"><div class="val">${asinchai}</div><div class="lbl">असिंचित</div></div>
 </div>
 <table>
-  <thead><tr><th>#</th><th>खसरा</th><th>भूमिस्वामी</th><th>क्षेत्रफल (हे.)</th><th>भूमि प्रकार</th><th>चराई भूमि</th><th>सीलिंग भूमि</th><th>निस्तार विवरण</th></tr></thead>
+  <thead><tr><th>#</th><th>खसरा</th><th>भूमिस्वामी</th><th style="text-align:center;">क्षेत्रफल (हे.)</th><th>भूमि प्रकार</th><th>चराई भूमि</th><th>सीलिंग भूमि</th><th>निस्तार विवरण</th></tr></thead>
   <tbody>${rowsHtml}</tbody>
 </table>
 <p class="footer">भूमि रिकॉर्ड डैशबोर्ड — हल्का 43 एवं 28 | कम्प्यूटर जनित रिकॉर्ड — सत्यापन हेतु पटवारी कार्यालय से संपर्क करें</p>
@@ -1408,7 +1408,7 @@
                 <td style="text-align:center;font-weight:800;">${i + 1}</td>
                 <td style="font-weight:800;text-align:center;">${r.kn}</td>
                 <td style="text-align:center;">${r.bn}</td>
-                <td style="text-align:center;">${r.area}</td>
+                <td style="text-align:right;font-weight:800;">${r.area}</td>
                 <td>${r.type || '—'}</td>
                 <td>${r.charai || '—'}</td>
                 <td>${r.ceiling || '—'}</td>
@@ -1464,7 +1464,7 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
       <th>#</th>
       <th>खसरा</th>
       <th>बसरा</th>
-      <th>क्षेत्रफल (हे.)</th>
+      <th style="text-align:center;">क्षेत्रफल (हे.)</th>
       <th>भूमि प्रकार</th>
       <th>चराई भूमि</th>
       <th>सीलिंग भूमि</th>
@@ -2136,7 +2136,7 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                     <td style="padding:14px 16px; font-weight:800; color:var(--text-muted);">${idx + 1}</td>
                     <td style="padding:14px 16px; font-weight:800; color:var(--royal);">${r.kn}</td>
                     <td style="padding:14px 16px; font-weight:600;">${r.bn || '—'}</td>
-                    <td style="padding:14px 16px; font-weight:800;">${r.area}</td>
+                    <td style="padding:14px 16px; font-weight:800; text-align:right;">${r.area}</td>
                     <td style="padding:14px 16px; font-weight:700; color:var(--text-main);">${r.owner}</td>
                     <td style="padding:14px 16px; font-size:13px; color:var(--text-muted); max-width:250px;">${r.nistar || '—'}</td>
                 `;
@@ -2182,7 +2182,7 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                 <td style="text-align:center;font-weight:800;">${i + 1}</td>
                 <td style="font-weight:800;text-align:center;">${r.kn}</td>
                 <td style="text-align:center;">${r.bn || '—'}</td>
-                <td style="text-align:center;font-weight:800;">${r.area}</td>
+                <td style="text-align:right;font-weight:800;">${r.area}</td>
                 <td>${r.owner}</td>
                 <td style="font-size:12px;">${r.nistar || '—'}</td>
               </tr>`).join('');
@@ -2219,12 +2219,12 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
 </div>
 <table>
   <thead><tr>
-     <th style="width:50px;">क्र.</th>
-     <th>खसरा नं.</th>
-     <th>बसरा नं.</th>
-     <th>रकबा (हे.)</th>
-     <th style="width:30%;">भूमिस्वामी का नाम</th>
-     <th style="width:30%;">निस्तार विवरण</th>
+     <th style="width:50px; text-align:center;">क्र.</th>
+     <th style="text-align:center;">खसरा नं.</th>
+     <th style="text-align:center;">बसरा नं.</th>
+     <th style="text-align:center;">रकबा (हे.)</th>
+     <th style="width:30%; text-align:center;">भूमिस्वामी का नाम</th>
+     <th style="width:30%; text-align:center;">निस्तार विवरण</th>
   </tr></thead>
   <tbody>${rowsHtml}</tbody>
 </table>
