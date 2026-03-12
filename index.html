@@ -2003,10 +2003,20 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
 
                   </div>
 
-                  <!-- कुल रकबा Total Row (shown when gram selected) -->
-                  <div id="statGramTotal" style="display:none;margin-top:14px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:14px 20px;display:none;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:8px;">
-                    <div style="font-size:12px;font-weight:800;color:rgba(255,255,255,0.6);text-transform:uppercase;letter-spacing:0.09em;">🧮 कुल रकबा (शासकीय + भूमिस्वामी)</div>
-                    <div id="stat-total-area" style="font-size:24px;font-weight:900;color:#fde68a;">—</div>
+                  <!-- कुल सारांश Row (shown when gram selected) -->
+                  <div id="statGramTotal" style="display:none;margin-top:14px;background:rgba(255,255,255,0.07);border:1px solid rgba(255,255,255,0.15);border-radius:14px;padding:14px 20px;align-items:center;justify-content:space-between;flex-wrap:wrap;gap:12px;">
+                    <div style="font-size:11px;font-weight:800;color:rgba(255,255,255,0.55);text-transform:uppercase;letter-spacing:0.09em;">🧮 कुल योग (शासकीय + भूमिस्वामी)</div>
+                    <div style="display:flex;gap:20px;align-items:center;flex-wrap:wrap;">
+                      <div style="text-align:center;">
+                        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px;">कुल खसरे</div>
+                        <div id="stat-total-count" style="font-size:22px;font-weight:900;color:#fde68a;">—</div>
+                      </div>
+                      <div style="width:1px;height:36px;background:rgba(255,255,255,0.15);"></div>
+                      <div style="text-align:center;">
+                        <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.4);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:2px;">कुल रकबा (हे.)</div>
+                        <div id="stat-total-area" style="font-size:22px;font-weight:900;color:#fde68a;">—</div>
+                      </div>
+                    </div>
                   </div>
 
                   <!-- Placeholder text when no gram selected -->
@@ -2632,7 +2642,8 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             document.getElementById('stat-gov-area').textContent   = govtArea.toFixed(3)   || '0.000';
             document.getElementById('stat-priv-count').textContent = privCount  || '0';
             document.getElementById('stat-priv-area').textContent  = privArea.toFixed(3)   || '0.000';
-            document.getElementById('stat-total-area').textContent = totalArea + ' हे.';
+            document.getElementById('stat-total-count').textContent = (govtCount + privCount) || '0';
+            document.getElementById('stat-total-area').textContent  = totalArea;
 
             cards.style.display = 'grid';
             const totalDiv = document.getElementById('statGramTotal');
