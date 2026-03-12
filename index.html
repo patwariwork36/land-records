@@ -861,17 +861,14 @@
                         <input type="text" id="khasraVal" class="form-input" placeholder="उदाहरण: 123 या 45/1" autocomplete="off">
                         <div id="khasraSuggest" style="
                             display:none;
-                            position:absolute;
-                            top:100%;
-                            left:0; right:0;
-                            z-index:999;
+                            position:fixed;
+                            z-index:9999;
                             background:#fff;
                             border:1px solid var(--border);
                             border-radius:12px;
-                            box-shadow:0 8px 32px rgba(26,26,110,0.13);
+                            box-shadow:0 8px 32px rgba(26,26,110,0.18);
                             max-height:240px;
                             overflow-y:auto;
-                            margin-top:4px;
                             padding-bottom:4px;
                         "></div>
                     </div>
@@ -1105,15 +1102,20 @@
             const inp = document.getElementById('khasraVal');
             const box = document.getElementById('khasraSuggest');
 
+            function positionBox() {
+                const rect = inp.getBoundingClientRect();
+                box.style.top    = (rect.bottom + 4) + 'px';
+                box.style.left   = rect.left + 'px';
+                box.style.width  = rect.width + 'px';
+            }
+
             function showSuggestions(q) {
                 const list = window._khasraList || [];
                 if (!q || !list.length) { box.style.display = 'none'; return; }
 
-                // Match: starts with the typed number (main number part)
                 const qNum = q.replace(/\s/g, '');
                 const matched = list.filter(kn => {
                     const s = String(kn);
-                    // match if khasra starts with typed digits, e.g. 45 matches 45, 45/1, 45/2
                     return s === qNum || s.startsWith(qNum + '/');
                 }).slice(0, 15);
 
@@ -1131,6 +1133,7 @@
                         transition:background 0.15s;
                     " onmouseenter="this.style.background='#f0f4ff'" onmouseleave="this.style.background=''">${kn}</div>`
                 ).join('');
+                positionBox();
                 box.style.display = 'block';
             }
 
@@ -1167,6 +1170,13 @@
                 this.scrollTop += e.deltaY;
             }, { passive: false });
 
+            // ── Close dropdown when page scrolls, reposition on resize ──
+            window.addEventListener('scroll', function () {
+                if (box.style.display !== 'none') box.style.display = 'none';
+            }, true);
+            window.addEventListener('resize', function () {
+                if (box.style.display !== 'none') positionBox();
+            });
 
             inp.addEventListener('keydown', function (e) {
                 if (!box.style.display || box.style.display === 'none') return;
