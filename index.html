@@ -1936,7 +1936,78 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                 <div style="font-size:12px;color:var(--text-muted);font-weight:600;">🕐 ${now}</div>
               </div>
 
-              <!-- Summary Counters -->
+              <!-- ▸ ग्रामवार भूमि सारांश Card (NEW) -->
+              <div style="background:linear-gradient(135deg,#0f172a 0%,#1e293b 100%);border-radius:24px;padding:26px 28px;margin-bottom:28px;box-shadow:0 8px 32px rgba(0,0,0,0.22);position:relative;overflow:hidden;">
+                <div style="position:absolute;top:-40px;right:-40px;width:160px;height:160px;border-radius:50%;background:rgba(255,255,255,0.03);"></div>
+                <div style="position:absolute;bottom:-30px;left:-20px;width:120px;height:120px;border-radius:50%;background:rgba(255,255,255,0.02);"></div>
+                <div style="position:relative;z-index:1;">
+                  <div style="display:flex;align-items:center;gap:10px;margin-bottom:18px;">
+                    <div style="font-size:22px;">🏘️</div>
+                    <div>
+                      <div style="font-size:16px;font-weight:900;color:#fff;font-family:'Noto Sans Devanagari',sans-serif;">ग्रामवार भूमि सारांश</div>
+                      <div style="font-size:11px;color:rgba(255,255,255,0.45);font-weight:600;margin-top:2px;">ग्राम चुनें और विवरण देखें</div>
+                    </div>
+                  </div>
+
+                  <!-- Dropdown -->
+                  <div style="position:relative;margin-bottom:20px;">
+                    <select id="statGramSelect" onchange="updateGramSummary()"
+                      style="width:100%;padding:12px 16px;border-radius:14px;border:1.5px solid rgba(255,255,255,0.18);background:rgba(255,255,255,0.08);color:#fff;font-size:14px;font-weight:700;font-family:'Noto Sans Devanagari',sans-serif;appearance:none;cursor:pointer;outline:none;">
+                      <option value="" style="background:#1e293b;color:#fff;">— ग्राम चुनें —</option>
+                      ${grams.map(g => `<option value="${g}" style="background:#1e293b;color:#fff;">${g}</option>`).join('')}
+                    </select>
+                    <div style="position:absolute;right:14px;top:50%;transform:translateY(-50%);pointer-events:none;color:rgba(255,255,255,0.5);font-size:14px;">▼</div>
+                  </div>
+
+                  <!-- Summary Cards Row (hidden until gram selected) -->
+                  <div id="statGramCards" style="display:none;grid-template-columns:1fr 1fr;gap:14px;">
+
+                    <!-- शासकीय भूमि -->
+                    <div style="background:linear-gradient(135deg,rgba(220,38,38,0.25),rgba(153,27,27,0.35));border:1px solid rgba(220,38,38,0.35);border-radius:18px;padding:18px 20px;">
+                      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+                        <div style="width:36px;height:36px;border-radius:10px;background:rgba(220,38,38,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">🏛️</div>
+                        <div style="font-size:13px;font-weight:800;color:rgba(255,255,255,0.9);font-family:'Noto Sans Devanagari',sans-serif;line-height:1.3;">शासकीय भूमि</div>
+                      </div>
+                      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                        <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:12px;text-align:center;">
+                          <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">कुल खसरे</div>
+                          <div id="stat-gov-count" style="font-size:28px;font-weight:900;color:#fca5a5;line-height:1;">—</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:12px;text-align:center;">
+                          <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">कुल रकबा (हे.)</div>
+                          <div id="stat-gov-area" style="font-size:22px;font-weight:900;color:#fca5a5;line-height:1;">—</div>
+                        </div>
+                      </div>
+                    </div>
+
+                    <!-- भूमिस्वामी हक -->
+                    <div style="background:linear-gradient(135deg,rgba(5,150,105,0.25),rgba(4,120,87,0.35));border:1px solid rgba(5,150,105,0.35);border-radius:18px;padding:18px 20px;">
+                      <div style="display:flex;align-items:center;gap:8px;margin-bottom:14px;">
+                        <div style="width:36px;height:36px;border-radius:10px;background:rgba(5,150,105,0.4);display:flex;align-items:center;justify-content:center;font-size:18px;">👨‍🌾</div>
+                        <div style="font-size:13px;font-weight:800;color:rgba(255,255,255,0.9);font-family:'Noto Sans Devanagari',sans-serif;line-height:1.3;">भूमिस्वामी हक</div>
+                      </div>
+                      <div style="display:grid;grid-template-columns:1fr 1fr;gap:10px;">
+                        <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:12px;text-align:center;">
+                          <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">कुल खसरे</div>
+                          <div id="stat-priv-count" style="font-size:28px;font-weight:900;color:#6ee7b7;line-height:1;">—</div>
+                        </div>
+                        <div style="background:rgba(255,255,255,0.08);border-radius:12px;padding:12px;text-align:center;">
+                          <div style="font-size:10px;font-weight:700;color:rgba(255,255,255,0.5);text-transform:uppercase;letter-spacing:0.07em;margin-bottom:4px;">कुल रकबा (हे.)</div>
+                          <div id="stat-priv-area" style="font-size:22px;font-weight:900;color:#6ee7b7;line-height:1;">—</div>
+                        </div>
+                      </div>
+                    </div>
+
+                  </div>
+
+                  <!-- Placeholder text when no gram selected -->
+                  <div id="statGramPlaceholder" style="text-align:center;padding:10px 0;color:rgba(255,255,255,0.3);font-size:13px;font-weight:600;">
+                    ⬆️ ऊपर से ग्राम चुनें
+                  </div>
+                </div>
+              </div>
+
+
               <div style="display:grid;grid-template-columns:repeat(auto-fit,minmax(140px,1fr));gap:14px;margin-bottom:28px;">
                 <div style="background:linear-gradient(135deg,#1a1a6e,#3b5bdb);color:#fff;border-radius:16px;padding:18px 20px;text-align:center;box-shadow:0 4px 20px rgba(26,26,110,0.25);">
                   <div style="font-size:11px;font-weight:700;opacity:0.7;text-transform:uppercase;letter-spacing:0.08em;margin-bottom:6px;">कुल ग्राम</div>
@@ -2491,7 +2562,48 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             pw.document.close();
         }
 
+        // ── Gram-wise Land Summary (Statistics Tab) ──
+        function updateGramSummary() {
+            const sel = document.getElementById('statGramSelect');
+            const cards = document.getElementById('statGramCards');
+            const placeholder = document.getElementById('statGramPlaceholder');
+            if (!sel || !cards) return;
+
+            const gram = sel.value;
+            if (!gram) {
+                cards.style.display = 'none';
+                if (placeholder) placeholder.style.display = 'block';
+                return;
+            }
+
+            // Filter records for selected village
+            const gramRecs = records.filter(r => r.v === gram);
+
+            // शासकीय भूमि: charai OR ceiling OR nistar has meaningful value
+            const isGovt = r =>
+                (r.charai && r.charai.trim() && r.charai.trim() !== 'नहीं' && r.charai.trim() !== '-') ||
+                (r.ceiling && r.ceiling.trim() && r.ceiling.trim() !== 'नहीं' && r.ceiling.trim() !== '-') ||
+                (r.nistar && r.nistar.trim() && r.nistar.trim() !== 'नहीं' && r.nistar.trim() !== '-');
+
+            const govtRecs = gramRecs.filter(isGovt);
+            const privRecs = gramRecs.filter(r => !isGovt(r));
+
+            const govtCount = govtRecs.length;
+            const govtArea = govtRecs.reduce((s, r) => s + parseFloat(r.area || 0), 0).toFixed(3);
+            const privCount = privRecs.length;
+            const privArea = privRecs.reduce((s, r) => s + parseFloat(r.area || 0), 0).toFixed(3);
+
+            document.getElementById('stat-gov-count').textContent = govtCount;
+            document.getElementById('stat-gov-area').textContent = govtArea;
+            document.getElementById('stat-priv-count').textContent = privCount;
+            document.getElementById('stat-priv-area').textContent = privArea;
+
+            cards.style.display = 'grid';
+            if (placeholder) placeholder.style.display = 'none';
+        }
+
         // ── Init ──────────────────────────────────────
+
         switchTab('dashboard'); // Ensure dashboard is shown on load (hides search form)
         loadData();
 
