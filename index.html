@@ -856,9 +856,23 @@
                     </div>
 
                     <!-- Khasra Input -->
-                    <div id="khasraGroup">
+                    <div id="khasraGroup" style="position:relative;">
                         <label class="form-label">📄 खसरा नंबर</label>
-                        <input type="text" id="khasraVal" class="form-input" placeholder="उदाहरण: 123 या 45/1">
+                        <input type="text" id="khasraVal" class="form-input" placeholder="उदाहरण: 123 या 45/1" autocomplete="off">
+                        <div id="khasraSuggest" style="
+                            display:none;
+                            position:absolute;
+                            top:100%;
+                            left:0; right:0;
+                            z-index:999;
+                            background:#fff;
+                            border:1px solid var(--border);
+                            border-radius:12px;
+                            box-shadow:0 8px 32px rgba(26,26,110,0.13);
+                            max-height:220px;
+                            overflow-y:auto;
+                            margin-top:4px;
+                        "></div>
                     </div>
 
                     <!-- Basra Input -->
@@ -1043,7 +1057,7 @@
             vals.forEach(v => { const o = document.createElement('option'); o.value = o.text = v; sel.appendChild(o); });
         }
 
-        // ── Village change → fill basra & farmers ───────────────
+        // ── Village change → fill basra & farmers & khasra list ──
         document.getElementById('villageInput').addEventListener('change', function () {
             const v = this.value;
 
@@ -1063,7 +1077,6 @@
             const farmerList = document.getElementById('farmerList');
             const namInput = document.getElementById('namVal');
             if (farmerList && namInput) {
-                // Collect ALL individual owner names across all records for this village
                 const names = [...new Set(
                     records.filter(r => r.v === v).flatMap(r => r.ownerNames).filter(Boolean)
                 )].sort((a, b) => a.localeCompare(b, 'hi'));
@@ -1073,9 +1086,105 @@
                 namInput.placeholder = 'नाम टाइप करें या चुनें';
             }
 
+            // 3. Store khasra list for this village (sorted numerically)
+            window._khasraList = [...new Set(records.filter(r => r.v === v).map(r => r.kn).filter(Boolean))].sort((a, b) => {
+                const [a1, a2 = '0'] = String(a).split('/');
+                const [b1, b2 = '0'] = String(b).split('/');
+                return (parseInt(a1) - parseInt(b1)) || (parseInt(a2) - parseInt(b2));
+            });
+
             if (currentTab === 'basra') toast(`${basras.length} बसरा उपलब्ध`, 'info');
             else if (currentTab === 'nam') toast(`${farmerList.options.length} भूमिस्वामी उपलब्ध`, 'info');
+            else if (currentTab === 'khasra') toast(`${window._khasraList.length} खसरे उपलब्ध`, 'info');
         });
+
+        // ── Khasra Autocomplete ───────────────────────────────────
+        (function () {
+            const inp = document.getElementById('khasraVal');
+            const box = document.getElementById('khasraSuggest');
+
+            function showSuggestions(q) {
+                const list = window._khasraList || [];
+                if (!q || !list.length) { box.style.display = 'none'; return; }
+
+                // Match: starts with the typed number (main number part)
+                const qNum = q.replace(/\s/g, '');
+                const matched = list.filter(kn => {
+                    const s = String(kn);
+                    // match if khasra starts with typed digits, e.g. 45 matches 45, 45/1, 45/2
+                    return s === qNum || s.startsWith(qNum + '/') || s.startsWith(qNum);
+                }).slice(0, 15);
+
+                if (!matched.length) { box.style.display = 'none'; return; }
+
+                box.innerHTML = matched.map(kn =>
+                    `<div data-kn="${kn}" style="
+                        padding:10px 16px;
+                        font-size:14px;
+                        font-weight:700;
+                        color:var(--royal);
+                        cursor:pointer;
+                        border-bottom:1px solid var(--border);
+                        font-family:'Noto Sans Devanagari',sans-serif;
+                        transition:background 0.15s;
+                    " onmouseenter="this.style.background='#f0f4ff'" onmouseleave="this.style.background=''">${kn}</div>`
+                ).join('');
+                box.style.display = 'block';
+            }
+
+            inp.addEventListener('input', function () {
+                showSuggestions(this.value.trim());
+            });
+
+            inp.addEventListener('focus', function () {
+                if (this.value.trim()) showSuggestions(this.value.trim());
+            });
+
+            box.addEventListener('mousedown', function (e) {
+                const item = e.target.closest('[data-kn]');
+                if (item) {
+                    inp.value = item.dataset.kn;
+                    box.style.display = 'none';
+                    inp.focus();
+                }
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!inp.contains(e.target) && !box.contains(e.target)) {
+                    box.style.display = 'none';
+                }
+            });
+
+            inp.addEventListener('keydown', function (e) {
+                if (!box.style.display || box.style.display === 'none') return;
+                const items = box.querySelectorAll('[data-kn]');
+                const active = box.querySelector('[data-kn][style*="background:#f0f4ff"]') ||
+                               box.querySelector('[data-kn].ksg-active');
+                let idx = [...items].indexOf(active);
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    if (active) active.style.background = '';
+                    const next = items[Math.min(idx + 1, items.length - 1)];
+                    next.style.background = '#f0f4ff';
+                    next.scrollIntoView({ block: 'nearest' });
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    if (active) active.style.background = '';
+                    const prev = items[Math.max(idx - 1, 0)];
+                    prev.style.background = '#f0f4ff';
+                    prev.scrollIntoView({ block: 'nearest' });
+                } else if (e.key === 'Enter') {
+                    if (active) {
+                        inp.value = active.dataset.kn;
+                        box.style.display = 'none';
+                    }
+                } else if (e.key === 'Escape') {
+                    box.style.display = 'none';
+                }
+            });
+        })();
+
 
         // ── Tab Switch ────────────────────────────────
         function switchTab(tab) {
