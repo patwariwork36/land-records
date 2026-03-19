@@ -1500,6 +1500,19 @@
         }
 
         // ── [CHANGE 3 & 4 HELPER] Card HTML ─────────────────
+        function getFullOwner(r) {
+            // Pehle check karo ki is record mein khud poora detail hai
+            if (r.ownerNames && r.ownerNames.length > 0 && r.ownerNames[0] !== 'अज्ञात' && !r.owner.includes('(ज. ब. न.)')) {
+                return r.owner;
+            }
+            // Basra ke mool khasre mein dhundho (jahan kn == bn)
+            const moolRec = records.find(rec => rec.v === r.v && rec.kn == rec.bn && rec.bn == r.bn);
+            if (moolRec && moolRec.owner && !moolRec.owner.includes('(ज. ब. न.)')) {
+                return moolRec.owner;
+            }
+            return r.owner; // fallback
+        }
+
         function getCardHTML(r) {
             const hdrClass = currentTab === 'nam' ? 'card-header-khasra' : `card-header-${currentTab}`;
             const typeBadge = r.type.includes('असिंचित') ? 'asinchai' : 'sinchai';
@@ -1527,7 +1540,7 @@
           </div>
           <div style="border-top:1px solid var(--border); padding-top:12px;">
             <div style="font-size:10px; font-weight:700; color:var(--text-muted); text-transform:uppercase; letter-spacing:0.07em; margin-bottom:6px;">भूमिस्वामी</div>
-            <div style="font-size:14px; font-weight:700; color:var(--text-main); line-height:1.4;">${r.owner}</div>
+            <div style="font-size:14px; font-weight:700; color:var(--text-main); line-height:1.4;">${getFullOwner(r)}</div>
           </div>
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px; border-top:1px solid var(--border); padding-top:12px;">
             <div>
@@ -1673,7 +1686,7 @@
                 banner.className = 'portfolio-banner';
                 banner.style.marginBottom = '24px';
                 const subtitle = currentTab === 'basra' ? `ग्राम: ${v} &nbsp;|&nbsp; बसरा: ${val}` : `ग्राम: ${v} &nbsp;|&nbsp; भूमिस्वामी: ${val}`;
-                const ownerName = currentTab === 'basra' ? found[0].owner : val;
+                const ownerName = currentTab === 'basra' ? getFullOwner(found[0]) : val;
                 const printFn = currentTab === 'basra' ? `printPortfolio('${escJS(ownerName)}','${escJS(v)}','${escJS(val)}')` : `printFarmerPortfolio('${escJS(ownerName)}','${escJS(v)}')`;
                 banner.innerHTML = `
                     <div style="display:flex; flex-wrap:wrap; gap:16px; align-items:center; justify-content:space-between;">
@@ -1775,7 +1788,7 @@
   <tr><th>🏘️ ग्राम</th><td>${r.v}${getHalka(r.v) ? ' &nbsp;<strong>(' + getHalka(r.v) + ')</strong>' : ''}</td></tr>
   <tr><th>📋 खसरा नंबर</th><td>${r.kn}</td></tr>
   <tr><th>📄 बसरा नंबर</th><td>${r.bn}</td></tr>
-  <tr><th>👤 भूमिस्वामी</th><td>${r.owner}</td></tr>
+  <tr><th>👤 भूमिस्वामी</th><td>${getFullOwner(r)}</td></tr>
   <tr><th>📐 क्षेत्रफल (हेक्टेयर)</th><td>${r.area} हे.</td></tr>
   <tr><th>🌱 भूमि का प्रकार</th><td>${r.type || '—'}</td></tr>
   <tr><th>🌾 फसल विवरण</th><td>
