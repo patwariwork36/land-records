@@ -1501,16 +1501,13 @@
 
         // ── [CHANGE 3 & 4 HELPER] Card HTML ─────────────────
         function getFullOwner(r) {
-            // Pehle check karo ki is record mein khud poora detail hai
-            if (r.ownerNames && r.ownerNames.length > 0 && r.ownerNames[0] !== 'अज्ञात' && !r.owner.includes('(ज. ब. न.)')) {
-                return r.owner;
-            }
-            // Basra ke mool khasre mein dhundho (jahan kn == bn)
-            const moolRec = records.find(rec => rec.v === r.v && rec.kn == rec.bn && rec.bn == r.bn);
-            if (moolRec && moolRec.owner && !moolRec.owner.includes('(ज. ब. न.)')) {
-                return moolRec.owner;
-            }
-            return r.owner; // fallback
+            if (!r.owner.includes('(ज. ब. न.)')) return r.owner;
+            const mool = records.find(rec =>
+                rec.v === r.v &&
+                String(rec.kn).trim() === String(rec.bn).trim() &&
+                String(rec.bn).trim() === String(r.bn).trim()
+            );
+            return (mool && !mool.owner.includes('(ज. ब. न.)')) ? mool.owner : r.owner;
         }
 
         function getCardHTML(r) {
@@ -1581,40 +1578,28 @@
                 </div>
               </div>
               
-              <!-- दुफसली — केवल तभी दिखाओ जब isDufasali = true -->
               ${r.isDufasali ? `
               <div style="background:#ede9fe; border:1px solid #c4b5fd; border-radius:8px; padding:6px 10px; display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
                 <span style="font-size:11px; font-weight:800; color:#5b21b6;">🌾 दुफसली रकबा</span>
                 <span style="font-size:13px; font-weight:900; color:#4c1d95;">${r.dufasaliArea} हे.</span>
               </div>` : ''}
               
-              <!-- NA Land खरीफ — केवल Yes होने पर -->
-              ${(r.finalKharifCrop && r.naLandK === 'Yes') ? `
-              <div style="display:flex; justify-content:space-between; align-items:center; background:#fef3c7; border-radius:6px; padding:4px 8px;">
-                <span style="font-size:11px; font-weight:700; color:#92400e;">⚠️ NA Land (खरीफ): Yes</span>
-                <span style="font-size:12px; font-weight:700; color:#78350f;">${r.naAreaK} हे.</span>
-              </div>` : ''}
-              
-              <!-- Fallow Land खरीफ — केवल Yes होने पर -->
-              ${(r.finalKharifCrop && r.fallowLandK === 'Yes') ? `
-              <div style="display:flex; justify-content:space-between; align-items:center; background:#fef3c7; border-radius:6px; padding:4px 8px;">
-                <span style="font-size:11px; font-weight:700; color:#92400e;">⚠️ Fallow Land (खरीफ): Yes</span>
-                <span style="font-size:12px; font-weight:700; color:#78350f;">${r.fallowAreaK} हे.</span>
-              </div>` : ''}
-              
-              <!-- NA Land रबी — केवल Yes होने पर -->
-              ${(r.finalRabiCrop && r.naLandR === 'Yes') ? `
-              <div style="display:flex; justify-content:space-between; align-items:center; background:#dbeafe; border-radius:6px; padding:4px 8px;">
-                <span style="font-size:11px; font-weight:700; color:#1e40af;">⚠️ NA Land (रबी): Yes</span>
-                <span style="font-size:12px; font-weight:700; color:#1e3a8a;">${r.naAreaR} हे.</span>
-              </div>` : ''}
-              
-              <!-- Fallow Land रबी — केवल Yes होने पर -->
-              ${(r.finalRabiCrop && r.fallowLandR === 'Yes') ? `
-              <div style="display:flex; justify-content:space-between; align-items:center; background:#dbeafe; border-radius:6px; padding:4px 8px;">
-                <span style="font-size:11px; font-weight:700; color:#1e40af;">⚠️ Fallow Land (रबी): Yes</span>
-                <span style="font-size:12px; font-weight:700; color:#1e3a8a;">${r.fallowAreaR} हे.</span>
-              </div>` : ''}
+              `+ (r.naLandK === 'Yes' ?
+                '<div style="display:flex;justify-content:space-between;align-items:center;background:#fef3c7;border-radius:6px;padding:5px 10px;margin-top:4px;">' +
+                '<span style="font-size:11px;font-weight:700;color:#92400e;">🏢 NA Land (खरीफ)</span>' +
+                '<span style="font-size:12px;font-weight:800;color:#78350f;">' + r.naAreaK + ' हे.</span></div>' : '') 
+              + (r.fallowLandK === 'Yes' ?
+                '<div style="display:flex;justify-content:space-between;align-items:center;background:#fef3c7;border-radius:6px;padding:5px 10px;margin-top:4px;">' +
+                '<span style="font-size:11px;font-weight:700;color:#92400e;">🏜️ Fallow Land (खरीफ)</span>' +
+                '<span style="font-size:12px;font-weight:800;color:#78350f;">' + r.fallowAreaK + ' हे.</span></div>' : '') 
+              + (r.naLandR === 'Yes' ?
+                '<div style="display:flex;justify-content:space-between;align-items:center;background:#dbeafe;border-radius:6px;padding:5px 10px;margin-top:4px;">' +
+                '<span style="font-size:11px;font-weight:700;color:#1e40af;">🏢 NA Land (रबी)</span>' +
+                '<span style="font-size:12px;font-weight:800;color:#1e3a8a;">' + r.naAreaR + ' हे.</span></div>' : '') 
+              + (r.fallowLandR === 'Yes' ?
+                '<div style="display:flex;justify-content:space-between;align-items:center;background:#dbeafe;border-radius:6px;padding:5px 10px;margin-top:4px;">' +
+                '<span style="font-size:11px;font-weight:700;color:#1e40af;">🏜️ Fallow Land (रबी)</span>' +
+                '<span style="font-size:12px;font-weight:800;color:#1e3a8a;">' + r.fallowAreaR + ' हे.</span></div>' : '') + `
               
             </div>
           </div>
@@ -1796,8 +1781,10 @@
   ${r.finalRabiCrop ? `<tr><th>❄️ रबी फसल</th><td>${r.finalRabiCrop}</td></tr>
   <tr><th>❄️ रबी रकबा</th><td>${r.rabiCropArea} हे.</td></tr>` : '<tr><th>❄️ रबी फसल</th><td>—</td></tr>'}
   ${r.isDufasali ? `<tr><th>🌾 दुफसली रकबा</th><td style="color:#5b21b6;font-weight:900;">${r.dufasaliArea} हे.</td></tr>` : ''}
-  <tr><th>🏢 NA रकबा</th><td>${r.naAreaK > 0 ? 'खरीफ: ' + r.naAreaK : ''} ${r.naAreaR > 0 ? (r.naAreaK > 0 ? ' | ' : '') + 'रबी: ' + r.naAreaR : (!r.naAreaK ? '—' : '')}</td></tr>
-  <tr><th>🏜️ पड़ती रकबा</th><td>${r.fallowAreaK > 0 ? 'खरीफ: ' + r.fallowAreaK : ''} ${r.fallowAreaR > 0 ? (r.fallowAreaK > 0 ? ' | ' : '') + 'रबी: ' + r.fallowAreaR : (!r.fallowAreaK ? '—' : '')}</td></tr>
+  ${r.naLandK === 'Yes' ? `<tr><th>🏢 NA Land (खरीफ)</th><td>${r.naAreaK} हे.</td></tr>` : ''}
+  ${r.fallowLandK === 'Yes' ? `<tr><th>🏜️ Fallow Land (खरीफ)</th><td>${r.fallowAreaK} हे.</td></tr>` : ''}
+  ${r.naLandR === 'Yes' ? `<tr><th>🏢 NA Land (रबी)</th><td>${r.naAreaR} हे.</td></tr>` : ''}
+  ${r.fallowLandR === 'Yes' ? `<tr><th>🏜️ Fallow Land (रबी)</th><td>${r.fallowAreaR} हे.</td></tr>` : ''}
   ${r.charai ? `<tr><th>🌿 चराई भूमि</th><td>${r.charai}</td></tr>` : ''}
   ${r.ceiling ? `<tr><th>⚖️ सीलिंग भूमि</th><td>${r.ceiling}</td></tr>` : ''}
   ${r.nistar ? `<tr><th>📝 निस्तार विवरण</th><td>${r.nistar}</td></tr>` : ''}
@@ -1828,16 +1815,10 @@
                   ${r.finalRabiCrop ? '<span style="font-size:11px;color:#1e40af;">रबी:</span> ' + r.finalRabiCrop : ''}
                   ${!r.finalKharifCrop && !r.finalRabiCrop ? '—' : ''}
                 </td>
-                <td>
-                  ${r.naAreaK > 0 ? '<span style="font-size:10px;color:#92400e;">ख:</span> ' + r.naAreaK + '<br>' : ''}
-                  ${r.naAreaR > 0 ? '<span style="font-size:10px;color:#1e3a8a;">र:</span> ' + r.naAreaR : ''}
-                  ${!r.naAreaK && !r.naAreaR ? '—' : ''}
-                </td>
-                <td>
-                  ${r.fallowAreaK > 0 ? '<span style="font-size:10px;color:#92400e;">ख:</span> ' + r.fallowAreaK + '<br>' : ''}
-                  ${r.fallowAreaR > 0 ? '<span style="font-size:10px;color:#1e3a8a;">र:</span> ' + r.fallowAreaR : ''}
-                  ${!r.fallowAreaK && !r.fallowAreaR ? '—' : ''}
-                </td>
+                <td>${r.naLandK === 'Yes' ? r.naAreaK + ' हे.' : '—'}</td>
+                <td>${r.fallowLandK === 'Yes' ? r.fallowAreaK + ' हे.' : '—'}</td>
+                <td>${r.naLandR === 'Yes' ? r.naAreaR + ' हे.' : '—'}</td>
+                <td>${r.fallowLandR === 'Yes' ? r.fallowAreaR + ' हे.' : '—'}</td>
                 <td>${r.charai || '—'}</td>
                 <td>${r.ceiling || '—'}</td>
                 <td>${r.nistar || '—'}</td>
@@ -1875,7 +1856,7 @@
   <div class="summary-item orange"><div class="val">${asinchai}</div><div class="lbl">असिंचित</div></div>
 </div>
 <table>
-  <thead><tr><th>#</th><th>खसरा</th><th>भूमिस्वामी</th><th style="text-align:center;">क्षेत्रफल (हे.)</th><th>भूमि प्रकार</th><th>फसल विवरण</th><th>NA रकबा</th><th>पड़ती रकबा</th><th>चराई भूमि</th><th>सीलिंग भूमि</th><th>निस्तार विवरण</th></tr></thead>
+  <thead><tr><th>#</th><th>खसरा</th><th>भूमिस्वामी</th><th style="text-align:center;">क्षेत्रफल (हे.)</th><th>भूमि प्रकार</th><th>फसल विवरण</th><th>NA Land (खरीफ)</th><th>Fallow (खरीफ)</th><th>NA Land (रबी)</th><th>Fallow (रबी)</th><th>चराई भूमि</th><th>सीलिंग भूमि</th><th>निस्तार विवरण</th></tr></thead>
   <tbody>${rowsHtml}</tbody>
 </table>
 <p class="footer">भूमि रिकॉर्ड डैशबोर्ड — हल्का 43 एवं 28 | कम्प्यूटर जनित रिकॉर्ड — सत्यापन हेतु पटवारी कार्यालय से संपर्क करें</p>
@@ -1910,8 +1891,10 @@
                 <td style="text-align:right;font-weight:800;">${r.area}</td>
                 <td>${r.type || '—'}</td>
                 <td>${r.isDufasali ? '<span style="color:#3730a3;font-weight:800;font-size:11px;">(दुफसली)</span><br>' : ''}${r.cropName || (r.kharifCrop || r.rabiCrop ? [r.kharifCrop, r.rabiCrop].filter(Boolean).join(' + ') : '—')}</td>
-                <td>${r.naArea || '—'}</td>
-                <td>${r.fallowArea || '—'}</td>
+                <td>${r.naLandK === 'Yes' ? r.naAreaK + ' हे.' : '—'}</td>
+                <td>${r.fallowLandK === 'Yes' ? r.fallowAreaK + ' हे.' : '—'}</td>
+                <td>${r.naLandR === 'Yes' ? r.naAreaR + ' हे.' : '—'}</td>
+                <td>${r.fallowLandR === 'Yes' ? r.fallowAreaR + ' हे.' : '—'}</td>
                 <td>${r.charai || '—'}</td>
                 <td>${r.ceiling || '—'}</td>
                 <td>${r.nistar || '—'}</td>
@@ -1969,8 +1952,10 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
       <th style="text-align:center;">क्षेत्रफल (हे.)</th>
       <th>भूमि प्रकार</th>
       <th>फसल विवरण</th>
-      <th>NA रकबा</th>
-      <th>पड़ती रकबा</th>
+      <th>NA Land (खरीफ)</th>
+      <th>Fallow (खरीफ)</th>
+      <th>NA Land (रबी)</th>
+      <th>Fallow (रबी)</th>
       <th>चराई भूमि</th>
       <th>सीलिंग भूमि</th>
       <th>निस्तार विवरण</th>
