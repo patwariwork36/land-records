@@ -1791,13 +1791,11 @@
   <tr><th>👤 भूमिस्वामी</th><td>${getFullOwner(r)}</td></tr>
   <tr><th>📐 क्षेत्रफल (हेक्टेयर)</th><td>${r.area} हे.</td></tr>
   <tr><th>🌱 भूमि का प्रकार</th><td>${r.type || '—'}</td></tr>
-  <tr><th>🌾 फसल विवरण</th><td>
-    ${r.isDufasali ? '<span style="color:#3730a3;font-weight:800;font-size:12px;">(दुफसली)</span> ' : ''}
-    ${r.finalKharifCrop ? 'खरीफ: ' + r.finalKharifCrop : ''}
-    ${r.finalKharifCrop && r.finalRabiCrop ? ' | ' : ''}
-    ${r.finalRabiCrop ? 'रबी: ' + r.finalRabiCrop : ''}
-    ${!r.finalKharifCrop && !r.finalRabiCrop ? '—' : ''}
-  </td></tr>
+  ${r.finalKharifCrop ? `<tr><th>☀️ खरीफ फसल</th><td>${r.finalKharifCrop} &nbsp;<span style="background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:800;">${r.kharifSource || ''}</span></td></tr>
+  <tr><th>☀️ खरीफ रकबा</th><td>${r.kharifCropArea} हे.</td></tr>` : '<tr><th>☀️ खरीफ फसल</th><td>—</td></tr>'}
+  ${r.finalRabiCrop ? `<tr><th>❄️ रबी फसल</th><td>${r.finalRabiCrop}</td></tr>
+  <tr><th>❄️ रबी रकबा</th><td>${r.rabiCropArea} हे.</td></tr>` : '<tr><th>❄️ रबी फसल</th><td>—</td></tr>'}
+  ${r.isDufasali ? `<tr><th>🌾 दुफसली रकबा</th><td style="color:#5b21b6;font-weight:900;">${r.dufasaliArea} हे.</td></tr>` : ''}
   <tr><th>🏢 NA रकबा</th><td>${r.naAreaK > 0 ? 'खरीफ: ' + r.naAreaK : ''} ${r.naAreaR > 0 ? (r.naAreaK > 0 ? ' | ' : '') + 'रबी: ' + r.naAreaR : (!r.naAreaK ? '—' : '')}</td></tr>
   <tr><th>🏜️ पड़ती रकबा</th><td>${r.fallowAreaK > 0 ? 'खरीफ: ' + r.fallowAreaK : ''} ${r.fallowAreaR > 0 ? (r.fallowAreaK > 0 ? ' | ' : '') + 'रबी: ' + r.fallowAreaR : (!r.fallowAreaK ? '—' : '')}</td></tr>
   ${r.charai ? `<tr><th>🌿 चराई भूमि</th><td>${r.charai}</td></tr>` : ''}
