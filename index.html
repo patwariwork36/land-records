@@ -1803,7 +1803,7 @@
             const asinchai = basraRecs.length - sinchai;
 
             const rowsHtml = basraRecs.map((r, i) => `
-              <tr style="background:${i % 2 === 0 ? '#f8fafc' : '#fff'}">
+              <tr>
                 <td style="text-align:center;font-weight:800;">${i + 1}</td>
                 <td style="font-weight:800;text-align:center;">${r.kn}</td>
                 <td>${r.owner}</td>
@@ -1833,8 +1833,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   body { font-family:'Noto Sans Devanagari','Inter',sans-serif; padding:30px; color:#1a1a1a; background:#fff; }
-  h1 { text-align:center; font-size:22px; font-weight:800; margin-bottom:4px; color:#1a1a6e; }
-  .subtitle { text-align:center; font-size:14px; color:#555; margin-bottom:20px; }
+  h1 { text-align:center; font-size:22px; font-weight:900; color:#1a1a6e; margin-bottom:6px; font-family:'Noto Sans Devanagari',sans-serif; }
+  .subtitle { text-align:center; font-size:13px; color:#555; margin-bottom:20px; }
   .summary { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:24px; justify-content:center; }
   .summary-item { background:#f0f4ff; border:1px solid #d1d9ff; border-radius:10px; padding:12px 20px; text-align:center; min-width:100px; }
   .summary-item .val { font-size:22px; font-weight:900; color:#1a1a6e; }
@@ -1842,8 +1842,32 @@
   .green .val { color:#065f46; } .green { background:#d1fae5; border-color:#6ee7b7; }
   .orange .val { color:#9a3412; } .orange { background:#ffedd5; border-color:#fdba74; }
   table { width:100%; border-collapse:collapse; font-size:13px; }
-  th,td { border:1px solid #e2e8f0; padding:10px 14px; text-align:left; vertical-align:middle; }
-  th { background:#eef2ff; font-weight:700; color:#1e40af; width:38%; text-align:left; padding-left:16px; border-left:3px solid #1a1a6e; }
+  th, td { border:1px solid #e2e8f0; padding:10px 14px; text-align:left; vertical-align:middle; }
+  th { 
+    background:#eef2ff; 
+    font-weight:700; 
+    color:#1e40af; 
+    text-align:left; 
+    padding-left:12px; 
+    border-left:3px solid #1a1a6e;
+    font-size:12px;
+    letter-spacing:0.03em;
+  }
+  td { 
+    font-weight:600; 
+    color:#1a1a1a; 
+    font-size:13px;
+    vertical-align:middle;
+  }
+  thead tr th {
+    background:#1a1a6e;
+    color:#fff;
+    text-align:center;
+    border-left:none;
+    font-size:12px;
+    padding:10px 8px;
+  }
+  tbody tr:nth-child(even) { background:#f8fafc; }
   .footer { margin-top:24px; text-align:center; font-size:11px; color:#aaa; border-top:1px solid #e2e8f0; padding-top:12px; }
   @media print { body { padding:15px; } }
 </style></head><body>
@@ -1884,7 +1908,7 @@
             const uniqueBasras = [...new Set(farmerRecs.map(r => r.bn).filter(Boolean))].join(', ');
 
             const rowsHtml = farmerRecs.map((r, i) => `
-              <tr style="background:${i % 2 === 0 ? '#f8fafc' : '#fff'}">
+              <tr>
                 <td style="text-align:center;font-weight:800;">${i + 1}</td>
                 <td style="font-weight:800;text-align:center;">${r.kn}</td>
                 <td style="text-align:center;">${r.bn}</td>
@@ -1910,8 +1934,8 @@
 <link href="https://fonts.googleapis.com/css2?family=Noto+Sans+Devanagari:wght@400;600;700;800&family=Inter:wght@400;500;600;700&display=swap" rel="stylesheet">
 <style>
   body { font-family:'Noto Sans Devanagari','Inter',sans-serif; padding:30px; color:#1a1a1a; background:#fff; }
-  h1   { text-align:center; font-size:22px; font-weight:800; margin-bottom:4px; color:#1a1a6e; }
-  .subtitle { text-align:center; font-size:14px; color:#555; margin-bottom:20px; }
+  h1   { text-align:center; font-size:22px; font-weight:900; color:#1a1a6e; margin-bottom:6px; font-family:'Noto Sans Devanagari',sans-serif; }
+  .subtitle { text-align:center; font-size:13px; color:#555; margin-bottom:20px; }
 
   /* Summary strip */
   .summary { display:flex; gap:14px; flex-wrap:wrap; margin-bottom:24px; justify-content:center; }
@@ -1926,7 +1950,31 @@
   /* Table */
   table   { width:100%; border-collapse:collapse; font-size:13px; }
   th, td  { border:1px solid #e2e8f0; padding:10px 14px; text-align:left; vertical-align:middle; }
-  th      { background:#eef2ff; font-weight:700; color:#1e40af; width:38%; text-align:left; padding-left:16px; border-left:3px solid #1a1a6e; }
+  th { 
+    background:#eef2ff; 
+    font-weight:700; 
+    color:#1e40af; 
+    text-align:left; 
+    padding-left:12px; 
+    border-left:3px solid #1a1a6e;
+    font-size:12px;
+    letter-spacing:0.03em;
+  }
+  td { 
+    font-weight:600; 
+    color:#1a1a1a; 
+    font-size:13px;
+    vertical-align:middle;
+  }
+  thead tr th {
+    background:#1a1a6e;
+    color:#fff;
+    text-align:center;
+    border-left:none;
+    font-size:12px;
+    padding:10px 8px;
+  }
+  tbody tr:nth-child(even) { background:#f8fafc; }
 
   .footer { margin-top:24px; text-align:center; font-size:11px; color:#aaa; border-top:1px solid #e2e8f0; padding-top:12px; }
   @media print { body { padding:15px; } }
