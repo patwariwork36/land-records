@@ -2952,7 +2952,7 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             if (!tbody) return;
 
             if (!filtered.length) {
-                tbody.innerHTML = '<tr><td colspan="10" style="text-align:center;padding:20px;color:#64748b;font-weight:600;">कोई रिकॉर्ड नहीं</td></tr>';
+                tbody.innerHTML = '<tr><td colspan="12" style="text-align:center;padding:20px;color:#64748b;font-weight:600;">कोई रिकॉर्ड नहीं</td></tr>';
                 return;
             }
 
@@ -2972,6 +2972,8 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                     '<td style="padding:10px 8px;color:#1e40af;font-weight:600;">' + (r.finalRabiCrop || '—') + '</td>' +
                     '<td style="padding:10px 8px;color:#1e40af;font-weight:700;">' + (parseFloat(r.rabiCropArea) > 0 ? r.rabiCropArea : '—') + '</td>' +
                     '<td style="padding:10px 8px;color:#3730a3;font-weight:800;">' + (r.isDufasali ? r.dufasaliArea : '—') + '</td>' +
+                    '<td style="padding:10px 8px;font-weight:600;">' + (r.type || '—') + '</td>' +
+                    '<td style="padding:10px 8px;font-size:12px;color:#475569;line-height:1.4;max-width:200px;">' + (r.nistar || '—') + '</td>' +
                     '<td style="padding:10px 8px;">' + sourceFlag + '</td>' +
                     '</tr>';
             }).join('');
