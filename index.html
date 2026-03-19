@@ -2703,6 +2703,8 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                                     <th style="padding:12px 8px; color:#1e40af; font-weight:800;">रबी फसल</th>
                                     <th style="padding:12px 8px; color:#1e40af; font-weight:800;">क्षेत्रफल (हे.)</th>
                                     <th style="padding:12px 8px; color:#3730a3; font-weight:800;">दुफसली (हे.)</th>
+                                    <th style="padding:12px 8px; color:#475569; font-weight:800;">सिंचित/असिंचित</th>
+                                    <th style="padding:12px 8px; color:#475569; font-weight:800;">निस्तार पत्रक विवरण</th>
                                     <th style="padding:12px 8px; color:#9a3412; font-weight:800;">डेटा स्त्रोत</th>
                                 </tr>
                             </thead>
@@ -2790,7 +2792,7 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             window.currentCropAllRecs = gramRecs;
 
             if (gramRecs.length === 0) {
-                tbody.innerHTML = `<tr><td colspan="10" style="text-align:center; padding:20px; color:#64748b; font-weight:600;">कोई डेटा नहीं मिला</td></tr>`;
+                tbody.innerHTML = `<tr><td colspan="12" style="text-align:center; padding:20px; color:#64748b; font-weight:600;">कोई डेटा नहीं मिला</td></tr>`;
                 return;
             }
 
@@ -2812,6 +2814,8 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                     <td style="padding:10px 8px; color:#1e40af; font-weight:600;">${r.finalRabiCrop || '—'}</td>
                     <td style="padding:10px 8px; color:#1e40af; font-weight:700;">${r.rabiCropArea > 0 ? r.rabiCropArea : '—'}</td>
                     <td style="padding:10px 8px; color:#3730a3; font-weight:800;">${r.isDufasali ? r.dufasaliArea : '—'}</td>
+                    <td style="padding:10px 8px; font-weight:600;">${r.type || '—'}</td>
+                    <td style="padding:10px 8px; font-size:12px; color:#475569; line-height:1.4; font-family:'Noto Sans Devanagari',sans-serif; max-width:200px;">${r.nistar || '—'}</td>
                     <td style="padding:10px 8px;">${sourceFlag}</td>
                 </tr>`;
             }).join('');
@@ -2825,7 +2829,7 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             let csvContent = "\uFEFF"; // BOM string for Hindi Excel
             const headers = [
                 "क्र.", "खसरा नं.", "बसरा नं.", "भूमिस्वामी", "खरीफ फसल", "क्षेत्रफल (हे.)",
-                "रबी फसल", "क्षेत्रफल (हे.)", "दुफसली (हे.)", "डेटा स्त्रोत"
+                "रबी फसल", "क्षेत्रफल (हे.)", "दुफसली (हे.)", "सिंचित/असिंचित", "निस्तार पत्रक विवरण", "डेटा स्त्रोत"
             ];
             csvContent += headers.join(",") + "\n";
 
@@ -2842,6 +2846,8 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                     `"${r.finalRabiCrop || '-'}"`,
                     `"${r.rabiCropArea > 0 ? r.rabiCropArea : '-'}"`,
                     `"${r.isDufasali ? r.dufasaliArea : '-'}"`,
+                    `"${r.type || '-'}"`,
+                    `"${(r.nistar || '-').replace(/\n/g, ' ')}"`,
                     `"${sourceText}"`
                 ];
                 csvContent += row.join(",") + "\n";
@@ -2875,6 +2881,8 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                     <td style="color:#1e40af;">${r.finalRabiCrop || '—'}</td>
                     <td style="text-align:right;">${r.rabiCropArea > 0 ? r.rabiCropArea : '—'}</td>
                     <td style="text-align:right;">${r.isDufasali ? r.dufasaliArea : '—'}</td>
+                    <td style="padding:6px 8px; font-weight:600;">${r.type || '—'}</td>
+                    <td style="padding:6px 8px; font-size:11px; color:#475569; line-height:1.4; max-width:200px;">${r.nistar || '—'}</td>
                     <td style="text-align:center;">${sourceText}</td>
                 </tr>`;
             }).join('');
@@ -2910,6 +2918,8 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
      <th>रबी फसल</th>
      <th>क्षेत्रफल (हे.)</th>
      <th>दुफसली (हे.)</th>
+     <th>सिंचित/असिंचित</th>
+     <th>निस्तार पत्रक विवरण</th>
      <th>डेटा स्त्रोत</th>
   </tr></thead>
   <tbody>${rowsHtml}</tbody>
