@@ -2751,6 +2751,9 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
 
                   </div>
                 </div>
+
+                <!-- NEW: Crop-wise Summary Cards Section -->
+                <div id="cropStatCardsContainer" style="display:none; margin-top:28px;"></div>
             </div>`;
 
             cropDiv.innerHTML = html;
@@ -2768,9 +2771,11 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             if (!sel || !cont || !tbody) return;
 
             const gram = sel.value;
+            const statCardsDiv = document.getElementById('cropStatCardsContainer');
             if (!gram) {
                 cont.style.display = 'none';
                 actions.style.display = 'none';
+                if (statCardsDiv) statCardsDiv.style.display = 'none';
                 return;
             }
 
@@ -2854,6 +2859,78 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             }).join('');
 
             tbody.innerHTML = rowsHtml;
+
+            // ── NEW: Aggregate and Render Crop-wise Summary Cards ──
+            const kharifStats = {};
+            const rabiStats = {};
+
+            gramRecs.forEach(r => {
+                const khCrop = (r.finalKharifCrop || '').trim();
+                const khArea = parseFloat(r.kharifCropArea || 0);
+                if (khCrop && khCrop !== '—' && khArea > 0) {
+                    if (!kharifStats[khCrop]) kharifStats[khCrop] = { count: 0, area: 0 };
+                    kharifStats[khCrop].count++;
+                    kharifStats[khCrop].area += khArea;
+                }
+
+                const rbCrop = (r.finalRabiCrop || '').trim();
+                const rbArea = parseFloat(r.rabiCropArea || 0);
+                if (rbCrop && rbCrop !== '—' && rbArea > 0) {
+                    if (!rabiStats[rbCrop]) rabiStats[rbCrop] = { count: 0, area: 0 };
+                    rabiStats[rbCrop].count++;
+                    rabiStats[rbCrop].area += rbArea;
+                }
+            });
+
+            const renderStatCol = (stats, title, themeColor, bgGradient, icon) => {
+                const entries = Object.entries(stats).sort((a,b) => b[1].area - a[1].area);
+                if (entries.length === 0) return '';
+                
+                let colHtml = `
+                <div style="flex:1; min-width:300px;">
+                    <div style="font-size:16px; font-weight:800; color:${themeColor}; margin-bottom:14px; display:flex; align-items:center; gap:8px; border-bottom:1.5px solid ${themeColor}44; padding-bottom:8px;">
+                        <span style="font-size:20px;">${icon}</span> ${title}
+                    </div>
+                    <div style="display:grid; grid-template-columns:1fr; gap:12px;">
+                `;
+
+                entries.forEach(([name, data]) => {
+                    colHtml += `
+                        <div style="background:${bgGradient}; border-radius:18px; padding:16px 20px; color:#fff; box-shadow:0 6px 18px rgba(0,0,0,0.12); position:relative; overflow:hidden; border:1px solid rgba(255,255,255,0.15);">
+                            <div style="position:absolute; top:-12px; right:-12px; font-size:48px; opacity:0.12; transform:rotate(15deg);">${icon}</div>
+                            <div style="font-size:16px; font-weight:800; margin-bottom:10px; font-family:'Noto Sans Devanagari',sans-serif; text-shadow:0 2px 4px rgba(0,0,0,0.1);">${name}</div>
+                            <div style="display:flex; justify-content:space-between; align-items:flex-end;">
+                                <div style="background:rgba(255,255,255,0.12); padding:8px 12px; border-radius:12px; flex:1; margin-right:8px;">
+                                    <div style="font-size:10px; font-weight:700; opacity:0.75; text-transform:uppercase; letter-spacing:0.04em;">कुल खसरे</div>
+                                    <div style="font-size:20px; font-weight:900;">${data.count}</div>
+                                </div>
+                                <div style="background:rgba(0,0,0,0.12); padding:8px 12px; border-radius:12px; flex:1; text-align:right;">
+                                    <div style="font-size:10px; font-weight:700; opacity:0.75; text-transform:uppercase; letter-spacing:0.04em;">कुल रकबा (हे.)</div>
+                                    <div style="font-size:20px; font-weight:900;">${data.area.toFixed(3)}</div>
+                                </div>
+                            </div>
+                        </div>
+                    `;
+                });
+
+                colHtml += `</div></div>`;
+                return colHtml;
+            };
+
+            const khCol = renderStatCol(kharifStats, 'खरीफ फसल विवरण', '#059669', 'linear-gradient(135deg,#065f46 0%,#059669 100%)', '🌾');
+            const rbCol = renderStatCol(rabiStats, 'रबी फसल विवरण', '#1e40af', 'linear-gradient(135deg,#1e3a8a 0%,#1e40af 100%)', '🚜');
+
+            if (statCardsDiv) {
+                if (khCol || rbCol) {
+                    statCardsDiv.style.display = 'block';
+                    statCardsDiv.innerHTML = `
+                        <div class="dash-section-title" style="margin-bottom:16px;">📊 ग्राम स्तरीय फसल सारांश</div>
+                        <div style="display:flex; flex-wrap:wrap; gap:24px; animation:slideUp 0.4s ease both;">${khCol}${rbCol}</div>
+                    `;
+                } else {
+                    statCardsDiv.style.display = 'none';
+                }
+            }
         }
 
         // ── Card Function: Export Crop Excel ──
