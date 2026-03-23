@@ -2724,6 +2724,9 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                         </button>
                     </div>
 
+                    <!-- NEW: Crop-wise Summary Cards Section (Moved Up) -->
+                    <div id="cropStatCardsContainer" style="display:none; margin-bottom:28px;"></div>
+
                     <!-- Crop Details Table Container -->
                     <div id="cropSummaryContainer" style="display:none; background:#fff; border-radius:16px; padding:12px; overflow-x:auto;">
                         <table style="width:100%; border-collapse:collapse; font-size:13px; text-align:left;">
@@ -2751,9 +2754,6 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
 
                   </div>
                 </div>
-
-                <!-- NEW: Crop-wise Summary Cards Section -->
-                <div id="cropStatCardsContainer" style="display:none; margin-top:28px;"></div>
             </div>`;
 
             cropDiv.innerHTML = html;
@@ -2924,7 +2924,7 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                 if (khCol || rbCol) {
                     statCardsDiv.style.display = 'block';
                     statCardsDiv.innerHTML = `
-                        <div class="dash-section-title" style="margin-bottom:16px;">📊 ग्राम स्तरीय फसल सारांश</div>
+                        <div class="dash-section-title" style="margin-bottom:16px; color:#fff;">📊 ग्राम स्तरीय फसल सारांश</div>
                         <div style="display:flex; flex-wrap:wrap; gap:24px; animation:slideUp 0.4s ease both;">${khCol}${rbCol}</div>
                     `;
                 } else {
