@@ -1491,6 +1491,7 @@
                 // Crop Summary for Portfolio
                 const kArea = found.reduce((s, r) => s + parseFloat(r.kharifCropArea || 0), 0).toFixed(3);
                 const rArea = found.reduce((s, r) => s + parseFloat(r.rabiCropArea || 0), 0).toFixed(3);
+                const dArea = found.reduce((s, r) => s + parseFloat(r.dufasaliArea || 0), 0).toFixed(3);
                 const kCrops = [...new Set(found.map(r => r.finalKharifCrop).filter(Boolean))].join(', ') || '—';
                 const rCrops = [...new Set(found.map(r => r.finalRabiCrop).filter(Boolean))].join(', ') || '—';
 
@@ -1509,7 +1510,7 @@
                         <div style="margin-top:6px; opacity:0.75; font-size:14px;">${subtitle}</div>
                         
                         <!-- 4 New Crop Fields -->
-                        <div style="margin-top:14px; display:grid; grid-template-columns:1fr 1fr; gap:8px 16px; background:rgba(255,255,255,0.1); border-radius:12px; padding:10px 14px; border:1px solid rgba(255,255,255,0.15);">
+                        <div style="margin-top:14px; display:grid; grid-template-columns:repeat(auto-fit, minmax(130px, 1fr)); gap:8px 16px; background:rgba(255,255,255,0.1); border-radius:12px; padding:10px 14px; border:1px solid rgba(255,255,255,0.15);">
                             <div>
                                 <div style="font-size:9px; font-weight:700; opacity:0.6; text-transform:uppercase;">☀️ खरीफ फसल</div>
                                 <div style="font-size:13px; font-weight:800; white-space:nowrap; overflow:hidden; text-overflow:ellipsis;" title="${kCrops}">${kCrops}</div>
@@ -1525,6 +1526,10 @@
                             <div>
                                 <div style="font-size:9px; font-weight:700; opacity:0.6; text-transform:uppercase;">❄️ रबी रकबा</div>
                                 <div style="font-size:13px; font-weight:800;">${rArea} हे.</div>
+                            </div>
+                            <div>
+                                <div style="font-size:9px; font-weight:700; opacity:0.6; text-transform:uppercase;">🌾 दुफसली रकबा</div>
+                                <div style="font-size:13px; font-weight:900; color:#fde68a;">${dArea} हे.</div>
                             </div>
                         </div>
                       </div>
@@ -1735,6 +1740,7 @@
   <div class="summary-item" style="background:#d1fae5; border-color:#6ee7b7;"><div class="val" style="font-size:18px; color:#065f46;">${basraRecs.reduce((s, r) => s + parseFloat(r.kharifCropArea || 0), 0).toFixed(3)} हे.</div><div class="lbl">खरीफ रकबा</div></div>
   <div class="summary-item" style="background:#dbeafe; border-color:#93c5fd;"><div class="val" style="font-size:16px; color:#1e40af;">${[...new Set(basraRecs.map(r => r.finalRabiCrop).filter(Boolean))].join(', ') || '—'}</div><div class="lbl">रबी फसल</div></div>
   <div class="summary-item" style="background:#dbeafe; border-color:#93c5fd;"><div class="val" style="font-size:18px; color:#1e40af;">${basraRecs.reduce((s, r) => s + parseFloat(r.rabiCropArea || 0), 0).toFixed(3)} हे.</div><div class="lbl">रबी रकबा</div></div>
+  <div class="summary-item" style="background:#ede9fe; border-color:#c4b5fd;"><div class="val" style="font-size:18px; color:#5b21b6;">${basraRecs.reduce((s, r) => s + parseFloat(r.dufasaliArea || 0), 0).toFixed(3)} हे.</div><div class="lbl">दुफसली रकबा</div></div>
 </div>
 <table>
   <thead><tr><th>#</th><th>खसरा</th><th>भूमिस्वामी</th><th style="text-align:center;">क्षेत्रफल (हे.)</th><th>भूमि प्रकार</th><th>फसल विवरण</th><th>NA Land (खरीफ)</th><th>Fallow (खरीफ)</th><th>NA Land (रबी)</th><th>Fallow (रabi)</th><th>चराई भूमि</th><th>सीलिंग भूमि</th><th>निस्तार विवरण</th></tr></thead>
@@ -1857,6 +1863,7 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
   <div class="summary-item" style="background:#d1fae5; border-color:#6ee7b7;"><div class="val" style="font-size:18px; color:#065f46;">${farmerRecs.reduce((s, r) => s + parseFloat(r.kharifCropArea || 0), 0).toFixed(3)} हे.</div><div class="lbl">खरीफ रकबा</div></div>
   <div class="summary-item" style="background:#dbeafe; border-color:#93c5fd;"><div class="val" style="font-size:16px; color:#1e40af;">${[...new Set(farmerRecs.map(r => r.finalRabiCrop).filter(Boolean))].join(', ') || '—'}</div><div class="lbl">रबी फसल</div></div>
   <div class="summary-item" style="background:#dbeafe; border-color:#93c5fd;"><div class="val" style="font-size:18px; color:#1e40af;">${farmerRecs.reduce((s, r) => s + parseFloat(r.rabiCropArea || 0), 0).toFixed(3)} हे.</div><div class="lbl">रबी रकबा</div></div>
+  <div class="summary-item" style="background:#ede9fe; border-color:#c4b5fd;"><div class="val" style="font-size:18px; color:#5b21b6;">${farmerRecs.reduce((s, r) => s + parseFloat(r.dufasaliArea || 0), 0).toFixed(3)} हे.</div><div class="lbl">दुफसली रकबा</div></div>
 </div>
 
 <table>
@@ -1896,7 +1903,7 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
 
             const totalArea = basraRecs.reduce((s, r) => s + parseFloat(r.area || 0), 0).toFixed(3);
             const kArea = basraRecs.reduce((s, r) => s + parseFloat(r.kharifCropArea || 0), 0).toFixed(3);
-            const rArea = basraRecs.reduce((s, r) => s + parseFloat(r.rabiCropArea || 0), 0).toFixed(3);
+            const dArea = basraRecs.reduce((s, r) => s + parseFloat(r.dufasaliArea || 0), 0).toFixed(3);
             const kCrops = [...new Set(basraRecs.map(r => r.finalKharifCrop).filter(Boolean))].join(' / ') || '—';
             const rCrops = [...new Set(basraRecs.map(r => r.finalRabiCrop).filter(Boolean))].join(' / ') || '—';
 
@@ -1906,7 +1913,8 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             
             // Subheading summary lines as requested
             csvContent += `खरीफ फसल,${kCrops},खरीफ रकबा,${kArea} हे.\n`;
-            csvContent += `रबी फसल,${rCrops},रबी रकबा,${rArea} हे.\n\n`;
+            csvContent += `रबी फसल,${rCrops},रबी रकबा,${rArea} हे.\n`;
+            csvContent += `दुफसली रकबा,${dArea} हे.\n\n`;
 
             csvContent += "क्र.,खसरा नं.,बसरा नं.,क्षेत्रफल (हे.),भूमि प्रकार,फसल विवरण,NA (खरीफ),Fallow (खरीफ),NA (रबी),Fallow (रबी),चराई भूमि,सीलिंग भूमि,निस्तार विवरण\n";
 
@@ -1963,7 +1971,7 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
 
             const totalArea = farmerRecs.reduce((s, r) => s + parseFloat(r.area || 0), 0).toFixed(3);
             const kArea = farmerRecs.reduce((s, r) => s + parseFloat(r.kharifCropArea || 0), 0).toFixed(3);
-            const rArea = farmerRecs.reduce((s, r) => s + parseFloat(r.rabiCropArea || 0), 0).toFixed(3);
+            const dArea = farmerRecs.reduce((s, r) => s + parseFloat(r.dufasaliArea || 0), 0).toFixed(3);
             const kCrops = [...new Set(farmerRecs.map(r => r.finalKharifCrop).filter(Boolean))].join(' / ') || '—';
             const rCrops = [...new Set(farmerRecs.map(r => r.finalRabiCrop).filter(Boolean))].join(' / ') || '—';
 
@@ -1972,7 +1980,8 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             csvContent += `ग्राम: ${village}, दिनांक: ${new Date().toLocaleDateString('hi-IN')}\n\n`;
             
             csvContent += `खरीफ फसल,${kCrops},खरीफ रकबा,${kArea} हे.\n`;
-            csvContent += `रबी फसल,${rCrops},रबी रकबा,${rArea} हे.\n\n`;
+            csvContent += `रबी फसल,${rCrops},रबी रकबा,${rArea} हे.\n`;
+            csvContent += `दुफसली रकबा,${dArea} हे.\n\n`;
 
             csvContent += "क्र.,खसरा नं.,बसरा नं.,क्षेत्रफल (हे.),भूमि प्रकार,फसल विवरण,NA (खरीफ),Fallow (खरीफ),NA (रबी),Fallow (रबी),चराई भूमि,सीलिंग भूमि,निस्तार विवरण\n";
 
