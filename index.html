@@ -2983,39 +2983,18 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             // सभी records उस ग्राम के
             const gramRecs = records.filter(r => r.v === gram);
 
-            // ── Helper: keyword से seed records निकालो, फिर उनके basra से expand करो ──
-            function expandByBasra(keyword) {
-                // Step 1: seed records — owner में keyword हो
-                const seedRecs = gramRecs.filter(r =>
-                    r.owner && r.owner.includes(keyword)
-                );
-                if (seedRecs.length === 0) return [];
+            // [FIX] Categorization logic for Government (शासकीय) and Private (भूमिस्वामी)
+            // Govt: Owner contains 'शासकीय' OR shares a Basra with a Government record
+            const govtSeeds = gramRecs.filter(r => r.owner && r.owner.includes('शासकीय'));
+            const govtBns   = new Set(govtSeeds.map(r => (r.bn || '').trim()).filter(b => b && b !== '' && b !== '-' && b !== '0'));
+            
+            const govtAll = gramRecs.filter(r => 
+                (r.owner && r.owner.includes('शासकीय')) || govtBns.has((r.bn || '').trim())
+            );
 
-                // Step 2: seed records के सभी unique basra numbers
-                const basraSet = new Set(
-                    seedRecs
-                        .map(r => (r.bn || '').trim())
-                        .filter(b => b && b !== '' && b !== '-' && b !== '0')
-                );
-
-                // Step 3: उन basra numbers के सभी records (same village)
-                const expanded = gramRecs.filter(r =>
-                    basraSet.has((r.bn || '').trim())
-                );
-
-                // seed + expanded (dedup by khasra+basra)
-                const seen = new Set();
-                const all = [...seedRecs, ...expanded].filter(r => {
-                    const key = `${r.kn}|${r.bn}`;
-                    if (seen.has(key)) return false;
-                    seen.add(key);
-                    return true;
-                });
-                return all;
-            }
-
-            const govtAll  = expandByBasra('शासकीय');
-            const privAll  = expandByBasra('भूमिस्वामी');
+            // [FIX] Private: ALL remaining records in the village (treat as remainder to ensure 100% accounting)
+            const govtIdSet = new Set(govtAll.map(g => g.id));
+            const privAll   = gramRecs.filter(r => !govtIdSet.has(r.id));
 
             const govtCount = govtAll.length;
             const govtArea  = govtAll.reduce((s, r) => s + parseFloat(r.area || 0), 0);
