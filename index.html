@@ -793,9 +793,19 @@
 
             function positionBox() {
                 const rect = inp.getBoundingClientRect();
-                box.style.top    = (rect.bottom + 4) + 'px';
-                box.style.left   = rect.left + 'px';
-                box.style.width  = rect.width + 'px';
+                const spaceBelow = window.innerHeight - rect.bottom;
+                const boxH = Math.min(240, box.scrollHeight || 240);
+                box.style.left  = rect.left + 'px';
+                box.style.width = rect.width + 'px';
+                if (spaceBelow < boxH + 8 && rect.top > boxH + 8) {
+                    // Show above input
+                    box.style.top    = '';
+                    box.style.bottom = (window.innerHeight - rect.top + 4) + 'px';
+                } else {
+                    // Show below input (default)
+                    box.style.bottom = '';
+                    box.style.top    = (rect.bottom + 4) + 'px';
+                }
             }
 
             function showSuggestions(q) {
@@ -859,10 +869,13 @@
                 this.scrollTop += e.deltaY;
             }, { passive: false });
 
-            // ── Reposition on resize ──
+            // ── Reposition on resize or scroll ──
             window.addEventListener('resize', function () {
                 if (box.style.display !== 'none') positionBox();
             });
+            window.addEventListener('scroll', function () {
+                if (box.style.display !== 'none') positionBox();
+            }, true);
 
             inp.addEventListener('keydown', function (e) {
                 if (!box.style.display || box.style.display === 'none') return;
@@ -2408,10 +2421,10 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             let title = village + ' - ';
 
             if (type === 'charai') {
-                filtered = filtered.filter(r => r.owner && r.owner.includes('शासकीय') && r.nistar && r.nistar.includes('चराई'));
+                filtered = filtered.filter(r => r.charai && r.charai.trim() !== '' && r.charai.trim() !== '—' && r.charai.trim().toLowerCase() !== 'no');
                 title += 'चराई भूमि';
             } else if (type === 'ceiling') {
-                filtered = filtered.filter(r => r.owner && r.owner.includes('शासकीय') && r.nistar && r.nistar.includes('सीलिंग'));
+                filtered = filtered.filter(r => r.ceiling && r.ceiling.trim() !== '' && r.ceiling.trim() !== '—' && r.ceiling.trim().toLowerCase() !== 'no');
                 title += 'सीलिंग भूमि';
             } else if (type === 'nistar') {
                 if (!nistar) {
