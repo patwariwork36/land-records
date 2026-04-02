@@ -334,6 +334,74 @@
             color: #92400e;
         }
 
+        /* ── Land detail mini-badges (card top) ── */
+        .land-badges-row {
+            display: flex;
+            flex-wrap: wrap;
+            gap: 6px;
+            margin: 0 0 14px 0;
+        }
+
+        .land-mini-badge {
+            display: inline-flex;
+            align-items: center;
+            font-size: 10px;
+            font-weight: 800;
+            letter-spacing: 0.02em;
+            padding: 4px 9px;
+            border-radius: 999px;
+            line-height: 1.25;
+            border: 1px solid transparent;
+            font-family: 'Noto Sans Devanagari', 'Inter', sans-serif;
+        }
+
+        .lmb-sinchit {
+            background: #d1fae5;
+            color: #065f46;
+            border-color: #6ee7b7;
+        }
+
+        .lmb-asinchit {
+            background: #ffedd5;
+            color: #9a3412;
+            border-color: #fdba74;
+        }
+
+        .lmb-irr-unknown {
+            background: #f1f5f9;
+            color: #475569;
+            border-color: #cbd5e1;
+        }
+
+        .lmb-yes {
+            background: #ecfdf5;
+            color: #047857;
+            border-color: #a7f3d0;
+        }
+
+        .lmb-no {
+            background: #fef2f2;
+            color: #b91c1c;
+            border-color: #fecaca;
+        }
+
+        .lmb-nistar-yes {
+            background: #eef2ff;
+            color: #3730a3;
+            border-color: #a5b4fc;
+        }
+
+        .lmb-nistar-no {
+            background: #f8fafc;
+            color: #64748b;
+            border-color: #e2e8f0;
+        }
+
+        #khasraSuggest .ksg-item.ksg-active,
+        #namSuggest .ksg-item.ksg-active {
+            background: #f0f4ff !important;
+        }
+
         /* ── PDF Button ── */
         .btn-pdf {
             display: inline-flex;
@@ -611,45 +679,6 @@
             align-items: center;
             gap: 8px;
         }
-        /* Khasra Suggestion Styles */
-        #khasraSuggest {
-            scrollbar-width: thin;
-            scrollbar-color: #cbd5e1 #f1f5f9;
-        }
-        #khasraSuggest::-webkit-scrollbar {
-            width: 8px;
-        }
-        #khasraSuggest::-webkit-scrollbar-track {
-            background: #f1f5f9;
-            border-radius: 0 12px 12px 0;
-        }
-        #khasraSuggest::-webkit-scrollbar-thumb {
-            background: #cbd5e1;
-            border: 2px solid #f1f5f9;
-            border-radius: 10px;
-        }
-        #khasraSuggest::-webkit-scrollbar-thumb:hover {
-            background: #94a3b8;
-        }
-
-        .khasra-suggest-item {
-            padding: 10px 16px;
-            font-size: 14px;
-            font-weight: 700;
-            color: var(--royal);
-            cursor: pointer;
-            border-bottom: 1px solid var(--border);
-            font-family: 'Noto Sans Devanagari', sans-serif;
-            transition: all 0.15s;
-        }
-        .khasra-suggest-item:last-child {
-            border-bottom: none;
-        }
-        .khasra-suggest-item:hover, .khasra-suggest-item.active {
-            background: #f0f4ff;
-            color: var(--royal-mid);
-            padding-left: 20px;
-        }
     </style>
     <!-- PapaParse for ultra-fast CSV streaming -->
     <script src="https://cdnjs.cloudflare.com/ajax/libs/PapaParse/5.4.1/papaparse.min.js"></script>
@@ -682,21 +711,11 @@
                     </div>
                 </div>
                 <div
-                    style="text-align:right; display:flex; flex-direction:column; gap:8px; color:rgba(255,255,255,0.6); font-size:12px;">
-                    <div style="display:flex; align-items:center; gap:8px;">
-                        <span id="recordCountBadge"
-                            style="background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.20); border-radius:8px; padding:6px 14px; font-weight:700; color:#fff; font-size:13px;">
-                            डेटा लोड हो रहा है...
-                        </span>
-                        <button onclick="loadData(true)" title="डेटा रिफ्रेश करें" 
-                            style="background:rgba(255,255,255,0.15); border:1px solid rgba(255,255,255,0.25); border-radius:8px; width:34px; height:34px; display:flex; align-items:center; justify-content:center; cursor:pointer; color:#fff; transition:all 0.2s;"
-                            onmouseover="this.style.background='rgba(255,255,255,0.25)'"
-                            onmouseout="this.style.background='rgba(255,255,255,0.15)'">
-                            <svg width="18" height="18" fill="none" stroke="currentColor" stroke-width="2.5" viewBox="0 0 24 24">
-                                <path d="M4 4v5h.582m15.356 2A8.001 8.001 0 004.582 9m0 0H9m11 11v-5h-.581m0 0a8.003 8.003 0 01-15.357-2m15.357 2H15" />
-                            </svg>
-                        </button>
-                    </div>
+                    style="text-align:right; display:flex; flex-direction:column; gap:4px; color:rgba(255,255,255,0.6); font-size:12px;">
+                    <span id="recordCountBadge"
+                        style="background:rgba(255,255,255,0.10); border:1px solid rgba(255,255,255,0.20); border-radius:8px; padding:6px 14px; font-weight:700; color:#fff; font-size:13px;">
+                        डेटा लोड हो रहा है...
+                    </span>
                 </div>
             </div>
         </div>
@@ -751,10 +770,7 @@
                         <input type="text" id="khasraVal" class="form-input" placeholder="उदाहरण: 123 या 45/1" autocomplete="off">
                         <div id="khasraSuggest" style="
                             display:none;
-                            position:absolute;
-                            top:100%;
-                            left:0;
-                            width:100%;
+                            position:fixed;
                             z-index:9999;
                             background:#fff;
                             border:1px solid var(--border);
@@ -762,7 +778,6 @@
                             box-shadow:0 8px 32px rgba(26,26,110,0.18);
                             max-height:240px;
                             overflow-y:auto;
-                            margin-top:4px;
                             padding-bottom:4px;
                         "></div>
                     </div>
@@ -778,11 +793,23 @@
                     </div>
 
                     <!-- Nam Input -->
-                    <div id="namGroup" style="display:none;">
+                    <div id="namGroup" style="display:none; position:relative;">
                         <label class="form-label">👤 भूमिस्वामी का नाम</label>
-                        <input type="text" id="namVal" list="farmerList" class="form-input"
+                        <input type="text" id="namVal" class="form-input" autocomplete="off"
                             placeholder="पूरा या आंशिक नाम टाइप करें (जैसे: उत्तरा)" disabled>
                         <datalist id="farmerList"></datalist>
+                        <div id="namSuggest" style="
+                            display:none;
+                            position:fixed;
+                            z-index:9999;
+                            background:#fff;
+                            border:1px solid var(--border);
+                            border-radius:12px;
+                            box-shadow:0 8px 32px rgba(26,26,110,0.18);
+                            max-height:240px;
+                            overflow-y:auto;
+                            padding-bottom:4px;
+                        "></div>
                     </div>
 
                     <!-- Button -->
@@ -814,6 +841,7 @@
                 <p style="color:var(--text-muted); font-size:14px;">कृपया ग्राम और नंबर की जांच करके दोबारा खोजें।</p>
             </div>
         </div>
+
         <!-- Results -->
         <div id="resultsDiv"></div>
         <!-- Statistics View -->
@@ -830,12 +858,30 @@
 
         let records = [];
         let currentTab = 'khasra';
-        let cachedRecords = null;
 
-        // ── Google Sheet Published Base URL ──
+        // ── Halka Mapping ──────────────────────────────
+        const HALKA_MAP = {
+            'गबौद': 43, 'तिल्दा': 43,
+            'छड़िया': 28, 'छेरकापुर': 28
+        };
+        function getHalka(village) {
+            const h = HALKA_MAP[village];
+            return h ? `हल्का ${h}` : '';
+        }
+
+        // ── Toast ──────────────────────────────────────
+        function toast(msg, type = 'success') {
+            const bg = { success: 'linear-gradient(to right,#059669,#047857)', error: 'linear-gradient(to right,#dc2626,#b91c1c)', info: 'linear-gradient(to right,#2563eb,#1a1a6e)' };
+            Toastify({ text: msg, duration: 3500, gravity: 'top', position: 'right', style: { background: bg[type] || bg.info, borderRadius: '10px', fontWeight: '700', fontSize: '14px' } }).showToast();
+        }
+
+        // ══════════════════════════════════════════════════════════════
+        // ── नई Multi-Tab Google Sheet Config ───────────────────────
+        // ══════════════════════════════════════════════════════════════
+        // Published base URL (File → Share → Publish to web से मिला)
         const PUBLISHED_BASE = 'https://docs.google.com/spreadsheets/d/e/2PACX-1vRImiJKxrvQj1NGbSRosAN1hRcqDEZF9Bvaucffx_Qq-iLgFQcgt2q3qzef1diUmjwa4eNVfgO6XuwG/pub';
 
-        // ── 4 Villages × 6 Tabs = 24 GIDs ──
+        // हर गाँव के लिए tab GIDs
         const VILLAGE_TABS = {
             'छेरकापुर': {
                 halka: 28,
@@ -843,8 +889,8 @@
                 dcsKharif:      812281055,
                 dcsRabi:        500848412,
                 bhuiyya:        297442845,
-                charaiCeiling: 1665923394,
-                nistarPatrak:  1804672264,
+                charaiCeiling: 1665923394,   // चराई सीलिंग एवं सिंचित असिंचित डाटा
+                nistarPatrak:  1804672264,   // निस्तार पत्रक डिटेल्स
             },
             'छड़िया': {
                 halka: 28,
@@ -852,8 +898,8 @@
                 dcsKharif:        8447409,
                 dcsRabi:       1499142573,
                 bhuiyya:       1174875375,
-                charaiCeiling: 1740498830,
-                nistarPatrak:  1031814681,
+                charaiCeiling: 1740498830,   // चराई सीलिंग एवं सिंचित असिंचित डाटा
+                nistarPatrak:  1031814681,   // निस्तार पत्रक डिटेल्स
             },
             'तिल्दा': {
                 halka: 43,
@@ -861,8 +907,8 @@
                 dcsKharif:      747813224,
                 dcsRabi:       1746853077,
                 bhuiyya:       1408389150,
-                charaiCeiling: 1518461563,
-                nistarPatrak:   795996909,
+                charaiCeiling: 1518461563,   // चराई सीलिंग एवं सिंचित असिंचित डाटा
+                nistarPatrak:   795996909,   // निस्तार पत्रक डिटेल्स
             },
             'गबौद': {
                 halka: 43,
@@ -870,62 +916,97 @@
                 dcsKharif:      153278540,
                 dcsRabi:        459902298,
                 bhuiyya:         29039308,
-                charaiCeiling:  602533391,
-                nistarPatrak:  2065179140,
+                charaiCeiling:  602533391,   // चराई सीलिंग एवं सिंचित असिंचित डाटा
+                nistarPatrak:  2065179140,   // निस्तार पत्रक डिटेल्स
             },
         };
 
-        const PROXY_PREFIXES = [
-            'https://api.allorigins.win/raw?url=',
-            'https://api.codetabs.com/v1/proxy?quest=',
-            'https://corsproxy.io/?',
-            'https://thingproxy.freeboard.io/fetch/'
-        ];
-
+        // Published CSV URL बनाने का helper (Cache busting के साथ)
         function makeCSVUrl(gid) {
             return `${PUBLISHED_BASE}?gid=${gid}&single=true&output=csv&t=${Date.now()}`;
         }
 
-        async function fetchCSV(gid) {
+        // Proxy race से एक CSV text लाना
+        const PROXY_PREFIXES = [
+            'https://api.allorigins.win/raw?url=',
+            'https://api.codetabs.com/v1/proxy?quest=',
+            'https://corsproxy.io/?',
+        ];
+
+        function fetchCSV(gid, tabName = '') {
             const csvUrl = makeCSVUrl(gid);
             const proxied = PROXY_PREFIXES.map(p =>
-                fetch(p + encodeURIComponent(csvUrl), { signal: AbortSignal.timeout(20000) })
-                    .then(r => { if (!r.ok) throw new Error('Not OK'); return r.text(); })
+                fetch(p + encodeURIComponent(csvUrl), { 
+                    signal: AbortSignal.timeout(20000),
+                    cache: 'no-store'
+                })
+                .then(r => { 
+                    if (!r.ok) throw new Error(`HTTP ${r.status}`); 
+                    return r.text(); 
+                })
             );
             const direct = new Promise((res, rej) => {
                 Papa.parse(csvUrl, {
                     download: true, header: false, skipEmptyLines: false,
                     complete: (result) => res(Papa.unparse(result.data)),
-                    error: rej,
+                    error: (err) => rej(new Error('PapaParse error')),
                 });
             });
             return new Promise((resolve, reject) => {
                 let failCount = 0;
                 const all = [...proxied, direct];
-                all.forEach(p => p.then(resolve).catch(() => {
+                all.forEach(p => p.then(resolve).catch((err) => {
                     failCount++;
-                    if (failCount === all.length) reject(new Error(`CSV fetch failed gid=${gid}`));
+                    if (failCount === all.length) {
+                        const errorMsg = `Fetch failed for ${tabName || 'gid=' + gid}`;
+                        console.warn(errorMsg, err);
+                        reject(new Error(errorMsg));
+                    }
                 }));
             });
         }
 
+        // CSV text → array of objects (header = row 1 by default, or custom headerRow index)
         function parseCSVToRows(csvText, headerRowIndex = 0) {
             const allRows = Papa.parse(csvText, { header: false, skipEmptyLines: 'greedy' }).data;
             if (allRows.length <= headerRowIndex) return [];
             const headers = allRows[headerRowIndex];
             return allRows.slice(headerRowIndex + 1).map(row => {
                 const obj = {};
-                headers.forEach((h, i) => { if (h) obj[h.trim()] = (row[i] || '').trim(); });
+                headers.forEach((h, i) => { obj[h.trim()] = (row[i] || '').trim(); });
                 return obj;
             });
         }
 
+        // ── एक गाँव का मर्ज: खसरा लिस्ट + DCS खरीफ + DCS रबी + भुइया खरीफ + चराई/सीलिंग + निस्तार पत्रक ──
         function mergeVillageData(villageName, halka, khasraRows, dcsKRows, dcsRRows, bhuiyyaRows, charaiRows = [], nistarRows = []) {
             const vLabel = `${villageName} (हल्का ${halka})`;
-            const dcsKMap = {}; dcsKRows.forEach(row => { const sn = (row['Survey Number'] || '').trim(); if (sn && !dcsKMap[sn]) dcsKMap[sn] = row; });
-            const dcsRMap = {}; dcsRRows.forEach(row => { const sn = (row['Survey Number'] || '').trim(); if (sn && !dcsRMap[sn]) dcsRMap[sn] = row; });
-            const bhuiyyaMap = {}; bhuiyyaRows.forEach(row => { const kn = (row['खसरा क्रमांक'] || '').trim(); if (kn && !bhuiyyaMap[kn]) bhuiyyaMap[kn] = row; });
-            
+
+            // DCS खरीफ / रबी: एक ही Survey Number कई पंक्तियों में हो सकता है — सभी रखें
+            const dcsKBySn = {};
+            dcsKRows.forEach(row => {
+                const sn = (row['Survey Number'] || '').trim();
+                if (!sn) return;
+                if (!dcsKBySn[sn]) dcsKBySn[sn] = [];
+                dcsKBySn[sn].push(row);
+            });
+
+            const dcsRBySn = {};
+            dcsRRows.forEach(row => {
+                const sn = (row['Survey Number'] || '').trim();
+                if (!sn) return;
+                if (!dcsRBySn[sn]) dcsRBySn[sn] = [];
+                dcsRBySn[sn].push(row);
+            });
+
+            // भुइया खरीफ lookup: खसरा क्रमांक → row
+            const bhuiyyaMap = {};
+            bhuiyyaRows.forEach(row => {
+                const kn = (row['खसरा क्रमांक'] || '').trim();
+                if (kn && !bhuiyyaMap[kn]) bhuiyyaMap[kn] = row;
+            });
+
+            // helper: किसी row से multiple possible column names में से पहला valid value निकालना
             function getCol(row, ...keys) {
                 if (!row) return '';
                 for (const k of keys) {
@@ -934,13 +1015,54 @@
                 }
                 return '';
             }
-            const charaiMap = {}; charaiRows.forEach(row => { const kn = getCol(row, 'खसरा नंबर', 'खसरा नम्बर', 'खसरा क्रमांक'); if (kn && !charaiMap[kn]) charaiMap[kn] = row; });
-            const nistarMap = {}; nistarRows.forEach(row => { const kn = getCol(row, 'खसरा नंबर', 'खसरा नम्बर', 'खसरा क्रमांक'); if (kn && !nistarMap[kn]) nistarMap[kn] = row; });
+
+            // चराई/सीलिंग lookup: खसरा नंबर → row
+            // तिल्दा में 'खसरा नम्बर' (anunasik 'म' variant) है, बाकी में 'खसरा नंबर'
+            const charaiMap = {};
+            charaiRows.forEach(row => {
+                const kn = getCol(row, 'खसरा नंबर', 'खसरा नम्बर', 'खसरा नम्‍बर');
+                if (kn && !charaiMap[kn]) charaiMap[kn] = row;
+            });
+
+            // निस्तार पत्रक lookup: खसरा नंबर → row (only special/nistar entries)
+            const nistarMap = {};
+            nistarRows.forEach(row => {
+                const kn = getCol(row, 'खसरा नंबर', 'खसरा नम्बर', 'खसरा नम्‍बर');
+                if (kn && !nistarMap[kn]) nistarMap[kn] = row;
+            });
+
+            function isBl(v) { return v === null || v === undefined || v === ''; }
+
+            function rowToKharifEntryDcs(d) {
+                return {
+                    cropName: ((d['Crop Name'] || '') + '').trim(),
+                    plotArea: ((d['Plot Area'] || '') + '').trim(),
+                    cropArea: parseFloat(d['Crop Area'] || 0),
+                    naLand: ((d['NA Land'] || '') + '').trim(),
+                    naArea: parseFloat(d['NA Area'] || 0),
+                    fallowLand: ((d['Fallow Land'] || '') + '').trim(),
+                    fallowArea: parseFloat(d['Fallow Area'] || 0),
+                };
+            }
+            function rowToRabiEntryDcs(d) {
+                return {
+                    cropName: ((d['Crop Name'] || '') + '').trim(),
+                    plotArea: ((d['Plot Area'] || '') + '').trim(),
+                    cropArea: parseFloat(d['Crop Area'] || 0),
+                    naLand: ((d['NA Land'] || '') + '').trim(),
+                    naArea: parseFloat(d['NA Area'] || 0),
+                    fallowLand: ((d['Fallow Land'] || '') + '').trim(),
+                    fallowArea: parseFloat(d['Fallow Area'] || 0),
+                };
+            }
 
             return khasraRows.map((o, i) => {
-                const kn = (o['खसरा नंबर'] || '').trim();
-                const bn = (o['बसरा नंबर'] || '').trim();
+                const kn   = (o['खसरा नंबर'] || '').trim();
+                const bn   = (o['बसरा नंबर'] || '').trim();
                 const ownerRaw = (o['नाम'] || 'अज्ञात').trim();
+                const ownerKey = ownerRaw.replace(/\r/g, '').replace(/\n/g, ' ').replace(/\s+/g, ' ').trim();
+
+                // owner names extraction (same logic as before)
                 const nameMatches = [...ownerRaw.matchAll(/नाम\s*[-–]\s*([^\n\r,;]+)/g)];
                 let ownerNames = nameMatches.map(m => m[1].trim()).filter(Boolean);
                 if (ownerNames.length === 0) {
@@ -948,111 +1070,253 @@
                     if (fallback) ownerNames = [fallback];
                 }
 
-                const dk = dcsKMap[kn] || null;
-                const dr = dcsRMap[kn] || null;
-                const bh = bhuiyyaMap[kn] || null;
-                const ch = charaiMap[kn] || null;
-                const ns = nistarMap[kn] || null;
+                // ── DCS खरीफ / रबी (सभी मिलान वाली पंक्तियाँ) ──
+                const dks = dcsKBySn[kn] || [];
+                const drs = dcsRBySn[kn] || [];
+                const dk = dks[0] || null;
+                const dr = drs[0] || null;
 
+                const rawK  = dk ? (dk['Crop Name']    || '') : null;
+                const rawL  = dk ? (dk['Plot Area']     || '') : null;
+                const rawM  = dk ? (dk['Crop Area']     || '') : null;
+                const rawN  = dk ? (dk['NA Land']       || '') : null;
+                const rawO  = dk ? (dk['NA Area']       || '') : null;
+                const rawP  = dk ? (dk['Fallow Land']   || '') : null;
+                const rawQ  = dk ? (dk['Fallow Area']   || '') : null;
+
+                const rawR  = dr ? (dr['Crop Name']    || '') : null;
+                const rawT  = dr ? (dr['Crop Area']     || '') : null;
+                const rawU  = dr ? (dr['NA Land']       || '') : null;
+                const rawV  = dr ? (dr['NA Area']       || '') : null;
+                const rawW  = dr ? (dr['Fallow Land']   || '') : null;
+                const rawX  = dr ? (dr['Fallow Area']   || '') : null;
+
+                const dcsKharifEntries = dks.map(rowToKharifEntryDcs);
+                const dcsRabiEntries = drs.map(rowToRabiEntryDcs);
+
+                // ── भुइया खरीफ data ──
+                const bh = bhuiyyaMap[kn] || null;
+                const cropNameZ     = bh ? (bh['फसल का नाम'] || '').trim() : '';
+                const rakbaSinchit  = bh ? parseFloat(bh['रकबा सिंचित फसल']  || 0) : 0;
+                const rakbaAsinchit = bh ? parseFloat(bh['रकबा असिंचित फसल'] || 0) : 0;
+
+                // ── चराई/सीलिंग/सिंचित-असिंचित data ──
+                const ch = charaiMap[kn] || null;
+                // सिंचित/असिंचित: गबौद में 'सिंचित'/'असिंचित' (बिना 'भूमि'), बाकी में 'सिंचित भूमि'/'असिंचित भूमि'
+                const sinchaiRaw    = getCol(ch, 'सिंचित / असिंचित');
+                const sinchaiType   = sinchaiRaw;
+                const charaiLand    = getCol(ch, 'चराई भूमि है ?');
+                const ceilingLand   = getCol(ch, 'सीलिंग भूमि है ?', 'सीलिंग भूमि है?');
+                // निस्तार विवरण column का नाम tabs में अलग-अलग है
+                const nistarVivaran = getCol(ch,
+                    'निस्तार पत्रक / वाजिबुल अर्ज विवरण',
+                    'निस्तार पत्रक विवरण',
+                    'निस्तार पत्रक विवरण / वाजिबुल अर्ज',
+                    'निस्तार पत्रक विवरण / वाजिबुल अर्ज ',
+                    'निस्तार पत्रक विवरण/वाजिबुल अर्ज विवरण'
+                );
+
+                // ── निस्तार पत्रक tab – special nistar entry check ──
+                const ns = nistarMap[kn] || null;
+                const isNistarEntry = !!ns;   // true if this khasra has a dedicated nistar record
+                const nistarPatrakVivaran = getCol(ns,
+                    'निस्तार पत्रक / वाजिबुल अर्ज विवरण',
+                    'निस्तार पत्रक विवरण',
+                    'निस्तार पत्रक विवरण / वाजिबुल अर्ज',
+                    'निस्तार पत्रक विवरण / वाजिबुल अर्ज ',
+                    'निस्तार पत्रक विवरण/वाजिबुल अर्ज विवरण'
+                );
+
+                const kharifDCSBlank = dks.length === 0;
+                const rabiDCSBlank   = drs.length === 0;
+
+                // ── Kharif fasal + source ──
                 let finalKharifCrop = '';
-                let kharifSource = '';
-                if (dk && dk['Crop Name'] && dk['Crop Name'] !== '--') {
-                    finalKharifCrop = dk['Crop Name'];
+                let kharifSource    = '';
+                let rawKharifDCS    = '';
+                if (!kharifDCSBlank) {
+                    rawKharifDCS = (rawK || '').toString().trim();
+                    if (rawKharifDCS && rawKharifDCS !== '--') {
+                        finalKharifCrop = rawKharifDCS;
+                    }
                     kharifSource = 'DCS';
-                } else if (bh && bh['फसल का नाम'] && bh['फसल का नाम'] !== '--' && !bh['फसल का नाम'].includes('पडत भूमि')) {
-                    finalKharifCrop = bh['फसल का नाम'];
-                    kharifSource = 'Bhuiyya';
+                } else {
+                    if (cropNameZ && cropNameZ !== '--' && !cropNameZ.includes('पडत भूमि')) {
+                        finalKharifCrop = cropNameZ;
+                        kharifSource    = 'Bhuiyya';
+                    }
                 }
 
-                const kharifCropArea = dk ? parseFloat(dk['Crop Area'] || 0) : (bh ? (parseFloat(bh['रकबा सिंचित फसल'] || 0) + parseFloat(bh['रकबा असिंचित फसल'] || 0)) : 0);
-                const finalRabiCrop = dr ? (dr['Crop Name'] || '').trim() : '';
-                const rabiCropArea = dr ? parseFloat(dr['Crop Area'] || 0) : 0;
-                const isDufasali = (finalKharifCrop !== '' && finalRabiCrop !== '');
+                // ── Kharif area ──
+                const kharifCropAreaDCS = parseFloat(rawM || 0);
+                const kharifCropArea = !kharifDCSBlank
+                    ? kharifCropAreaDCS
+                    : (rakbaSinchit > 0 ? rakbaSinchit : rakbaAsinchit);
+
+                // ── NA / Fallow खरीफ ──
+                const naLandK    = (rawN  || '').toString().trim();
+                const naAreaK    = parseFloat(rawO  || 0);
+                const fallowLandK= (rawP  || '').toString().trim();
+                const fallowAreaK= parseFloat(rawQ  || 0);
+
+                // ── Rabi fasal ──
+                let finalRabiCrop = '';
+                let rawRabiDCS    = '';
+                if (!rabiDCSBlank) {
+                    rawRabiDCS = (rawR || '').toString().trim();
+                    if (rawRabiDCS && rawRabiDCS !== '--') {
+                        finalRabiCrop = rawRabiDCS;
+                    }
+                }
+
+                // ── Rabi area + NA/Fallow ──
+                const rabiCropArea = parseFloat(rawT || 0);
+                const naLandR    = (rawU  || '').toString().trim();
+                const naAreaR    = parseFloat(rawV  || 0);
+                const fallowLandR= (rawW  || '').toString().trim();
+                const fallowAreaR= parseFloat(rawX  || 0);
+
+                const kharifCropAreaSumNum = !kharifDCSBlank
+                    ? dks.reduce((s, d) => s + parseFloat(d['Crop Area'] || 0), 0)
+                    : (rakbaSinchit > 0 ? rakbaSinchit : rakbaAsinchit);
+                const rabiCropAreaSumNum = !rabiDCSBlank
+                    ? drs.reduce((s, d) => s + parseFloat(d['Crop Area'] || 0), 0)
+                    : 0;
+
+                const isDufasali   = (finalKharifCrop !== '' && finalRabiCrop !== '');
+                const dufasaliArea = isDufasali ? Math.min(kharifCropAreaSumNum, rabiCropAreaSumNum) : 0;
 
                 return {
-                    id: i + 1, v: vLabel, kn, bn,
-                    owner: ownerRaw,
+                    id: i + 1,
+                    v: vLabel,
+                    kn: kn,
+                    bn: bn,
+                    owner:      ownerRaw || 'अज्ञात',
+                    ownerKey:   ownerKey || 'अज्ञात',
                     ownerNames: ownerNames.length ? ownerNames : ['अज्ञात'],
-                    area: parseFloat(o['क्षेत्रफल'] || 0).toFixed(3),
-                    type: getCol(ch, 'सिंचित / असिंचित'),
-                    nistar: getCol(ns, 'निस्तार पत्रक / वाजिबुल अर्ज विवरण', 'निस्तार पत्रक विवरण', 'निस्तार पत्रक विवरण / वाजिबुल अर्ज', 'निस्तार पत्रक विवरण / वाजिबुल अर्ज ', 'निस्तार पत्रक विवरण/वाजिबुल अर्ज विवरण') || getCol(ch, 'निस्तार विवरण', 'निस्तार पत्रक / वाजिबुल अर्ज विवरण', 'निस्तार पत्रक एवं वाजिबुल अर्ज विवरण'),
-                    charai: getCol(ch, 'चराई भूमि है ?'),
-                    ceiling: getCol(ch, 'सीलिंग भूमि है ?', 'सीलिंग भूमि है?'),
-                    isNistarEntry: !!ns,
-                    kharifSource,
-                    finalKharifCrop,
-                    kharifCropArea: kharifCropArea.toFixed(3),
-                    finalRabiCrop,
-                    rabiCropArea: rabiCropArea.toFixed(3),
-                    isDufasali,
-                    dufasaliArea: isDufasali ? Math.min(kharifCropArea, rabiCropArea).toFixed(3) : '0.000',
-                    naLandK: dk ? (dk['NA Land'] || '') : '',
-                    naAreaK: dk ? parseFloat(dk['NA Area'] || 0).toFixed(3) : '0.000',
-                    fallowLandK: dk ? (dk['Fallow Land'] || '') : '',
-                    fallowAreaK: dk ? parseFloat(dk['Fallow Area'] || 0).toFixed(3) : '0.000',
-                    naLandR: dr ? (dr['NA Land'] || '') : '',
-                    naAreaR: dr ? parseFloat(dr['NA Area'] || 0).toFixed(3) : '0.000',
-                    fallowLandR: dr ? (dr['Fallow Land'] || '') : '',
-                    fallowAreaR: dr ? parseFloat(dr['Fallow Area'] || 0).toFixed(3) : '0.000',
+                    area:  parseFloat(o['क्षेत्रफल'] || 0).toFixed(3),
+                    type:  sinchaiType,          // चराई/सीलिंग tab से सिंचित/असिंचित
+                    nistar: nistarVivaran,        // चराई/सीलिंग tab से निस्तार विवरण
+                    charai:  charaiLand,          // चराई भूमि है?
+                    ceiling: ceilingLand,         // सीलिंग भूमि है?
+                    isNistarEntry:        isNistarEntry,          // निस्तार पत्रक tab में entry है?
+                    nistarPatrakVivaran:  nistarPatrakVivaran,    // निस्तार पत्रक tab का विशेष विवरण
+
+                    kharifDCSBlank:  kharifDCSBlank,
+                    rabiDCSBlank:    rabiDCSBlank,
+                    kharifSource:    kharifSource,
+                    rawKharifDCS:    rawKharifDCS,
+                    rawRabiDCS:      rawRabiDCS,
+                    finalKharifCrop: finalKharifCrop,
+                    kharifCropArea:  kharifCropArea.toFixed(3),
+                    finalRabiCrop:   finalRabiCrop,
+                    rabiCropArea:    rabiCropArea.toFixed(3),
+                    kharifCropAreaSum: kharifCropAreaSumNum.toFixed(3),
+                    rabiCropAreaSum:   rabiCropAreaSumNum.toFixed(3),
+                    dcsKharifEntries:  dcsKharifEntries,
+                    dcsRabiEntries:    dcsRabiEntries,
+                    isDufasali:      isDufasali,
+                    dufasaliArea:    dufasaliArea.toFixed(3),
+                    naLandK:    naLandK,  naAreaK:    naAreaK.toFixed(3),
+                    fallowLandK: fallowLandK, fallowAreaK: fallowAreaK.toFixed(3),
+                    naLandR:    naLandR,  naAreaR:    naAreaR.toFixed(3),
+                    fallowLandR: fallowLandR, fallowAreaR: fallowAreaR.toFixed(3),
                 };
             }).filter(r => r.v && r.kn);
         }
 
-        async function loadData(force = false) {
-            if (force) cachedRecords = null;
-            if (cachedRecords) { records = cachedRecords; onSuccess(); return; }
+        let cachedRecords = null;
+
+        async function loadData(forceRefresh = false) {
+            if (forceRefresh) {
+                cachedRecords = null;
+                records = [];
+                toast('ताजा डेटा लोड शुरू हो रहा है...', 'info');
+            }
+
+            // Cached data instantly return
+            if (cachedRecords) {
+                records = cachedRecords;
+                fillVillages();
+                const badge = document.getElementById('recordCountBadge');
+                badge.innerHTML = `✅ ${records.length} रिकॉर्ड (कैश) <span onclick="loadData(true)" style="cursor:pointer;text-decoration:underline;margin-left:8px;font-size:11px;">🔄 रिफ्रेश</span>`;
+                toast(`${records.length} रिकॉर्ड कैश से प्राप्त हुए`, 'success');
+                switchTab('statistics');
+                return records;
+            }
+
             const badge = document.getElementById('recordCountBadge');
             badge.textContent = '⏳ डेटा लोड हो रहा है...';
 
+            function onSuccess() {
+                fillVillages();
+                badge.innerHTML = `✅ ${records.length} रिकॉर्ड लोड <span onclick="loadData(true)" style="cursor:pointer;text-decoration:underline;margin-left:8px;font-size:11px;">🔄 रिफ्रेश</span>`;
+                toast(`${records.length} रिकॉर्ड सफलतापूर्वक लोड हुए`, 'success');
+                switchTab('statistics');
+            }
+
+            function onError(msg, detailedErr = '') {
+                console.error('Data Load Error:', detailedErr || msg);
+                badge.innerHTML = `❌ लोड विफल &nbsp;<button onclick="loadData()" style="background:#1a1a6e;color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer;font-weight:700;">🔄 पुनः प्रयास</button>
+                <input type="file" id="manualCSV" style="display:none" onchange="handleManualUpload(event)">
+                <button onclick="document.getElementById('manualCSV').click()" style="background:#059669;color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer;font-weight:700;margin-left:5px;">📁 फाइल अपलोड</button>`;
+                toast(msg || 'नेटवर्क त्रुटि — कृपया इंटरनेट जांचें', 'error');
+            }
+
             try {
+                badge.textContent = '⏳ डेटा लोड हो रहा है (24 tabs)...';
+
                 const villageNames = Object.keys(VILLAGE_TABS);
                 const villageResults = await Promise.all(
                     villageNames.map(async (vName) => {
                         const cfg = VILLAGE_TABS[vName];
-                        const [kh, dk, dr, bh, ch, ns] = await Promise.all([
-                            fetchCSV(cfg.khasra), fetchCSV(cfg.dcsKharif), fetchCSV(cfg.dcsRabi),
-                            fetchCSV(cfg.bhuiyya), fetchCSV(cfg.charaiCeiling), fetchCSV(cfg.nistarPatrak)
-                        ]);
-                        return mergeVillageData(vName, cfg.halka, 
-                            parseCSVToRows(kh, 1), parseCSVToRows(dk, 0), parseCSVToRows(dr, 0),
-                            parseCSVToRows(bh, 2), parseCSVToRows(ch, 1), parseCSVToRows(ns, 1)
-                        );
+                        try {
+                            const [khasraCSV, dcsKCSV, dcsRCSV, bhuiyyaCSV, charaiCSV, nistarCSV] = await Promise.all([
+                                fetchCSV(cfg.khasra, `${vName} (Khasra List)`),
+                                fetchCSV(cfg.dcsKharif, `${vName} (DCS Kharif)`),
+                                fetchCSV(cfg.dcsRabi, `${vName} (DCS Rabi)`),
+                                fetchCSV(cfg.bhuiyya, `${vName} (Bhuiyya)`),
+                                fetchCSV(cfg.charaiCeiling, `${vName} (Charai)`),
+                                fetchCSV(cfg.nistarPatrak, `${vName} (Nistar)`),
+                            ]);
+
+                            // खसरा लिस्ट: row 1 = title, row 2 = header (index 1)
+                            const khasraRows  = parseCSVToRows(khasraCSV,  1);
+                            const dcsKRows    = parseCSVToRows(dcsKCSV,    0);
+                            const dcsRRows    = parseCSVToRows(dcsRCSV,    0);
+                            const bhuiyyaRows = parseCSVToRows(bhuiyyaCSV, 2);
+                            const charaiRows  = parseCSVToRows(charaiCSV,  1);
+                            const nistarRows  = parseCSVToRows(nistarCSV,  1);
+
+                            return mergeVillageData(vName, cfg.halka, khasraRows, dcsKRows, dcsRRows, bhuiyyaRows, charaiRows, nistarRows);
+                        } catch (vErr) {
+                            console.error(`Error loading village ${vName}:`, vErr);
+                            throw new Error(`${vName} का डेटा लोड नहीं हो सका: ${vErr.message}`);
+                        }
                     })
                 );
+
                 records = villageResults.flat();
                 if (records.length === 0) throw new Error('No records merged');
+
                 cachedRecords = records;
                 onSuccess();
+
             } catch (err) {
-                console.error(err);
-                onError();
+                console.error('Multi-tab load failed:', err);
+                const displayMsg = err.message.includes('डेटा लोड नहीं हो सका') 
+                    ? err.message 
+                    : 'डेटा लोड विफल — कृपया इंटरनेट जांचें या शीट चेक करें';
+                onError(displayMsg, err);
             }
         }
 
-        function onSuccess() {
-            const badge = document.getElementById('recordCountBadge');
-            fillVillages();
-            badge.textContent = `✅ ${records.length} रिकॉर्ड लोड`;
-            toast(`${records.length} रिकॉर्ड लोड हुए`, 'success');
-            switchTab('statistics');
+        function handleManualUpload(e) {
+            // नई multi-tab sheet के साथ manual upload काम नहीं करता
+            // (डेटा 16 tabs से merge होता है, single CSV से नहीं)
+            toast('नई sheet के साथ manual upload उपलब्ध नहीं — sheet को "Publish to web" करें', 'error');
         }
 
-        function onError() {
-            const badge = document.getElementById('recordCountBadge');
-            badge.innerHTML = `❌ विफल &nbsp;<button onclick="loadData()" style="background:#1a1a6e;color:#fff;border:none;border-radius:6px;padding:3px 10px;font-size:12px;cursor:pointer;">🔄 पुनः प्रयास</button>`;
-            toast('डेटा लोड विफल', 'error');
-        }
-
-        function toast(msg, type = 'success') {
-            const bg = { success: 'linear-gradient(to right,#059669,#047857)', error: 'linear-gradient(to right,#dc2626,#b91c1c)', info: 'linear-gradient(to right,#2563eb,#1a1a6e)' };
-            Toastify({ text: msg, duration: 3500, gravity: 'top', position: 'right', style: { background: bg[type] || bg.info, borderRadius: '10px' } }).showToast();
-        }
-
-        function getHalka(village) {
-            if (village.includes('28')) return 'हल्का 28';
-            if (village.includes('43')) return 'हल्का 43';
-            return '';
-        }
 
         function fillVillages() {
             const desiredOrder = ['छेरकापुर (हल्का 28)', 'छड़िया (हल्का 28)', 'तिल्दा (हल्का 43)', 'गबौद (हल्का 43)'];
@@ -1093,6 +1357,7 @@
                 names.forEach(n => { const o = document.createElement('option'); o.value = n; farmerList.appendChild(o); });
                 namInput.disabled = false;
                 namInput.placeholder = 'नाम टाइप करें या चुनें';
+                window._farmerNamesList = names;
             }
 
             // 3. Store khasra list for this village (sorted numerically)
@@ -1112,6 +1377,13 @@
             const inp = document.getElementById('khasraVal');
             const box = document.getElementById('khasraSuggest');
 
+            function positionBox() {
+                const rect = inp.getBoundingClientRect();
+                box.style.top    = (rect.bottom + 4) + 'px';
+                box.style.left   = rect.left + 'px';
+                box.style.width  = rect.width + 'px';
+            }
+
             function showSuggestions(q) {
                 const list = window._khasraList || [];
                 if (!q || !list.length) { box.style.display = 'none'; return; }
@@ -1124,11 +1396,20 @@
 
                 if (!matched.length) { box.style.display = 'none'; return; }
 
-                box.innerHTML = matched.map(kn =>
-                    `<div class="khasra-suggest-item" data-kn="${kn}">${kn}</div>`
+                box.innerHTML = matched.map((kn, i) =>
+                    `<div class="ksg-item" data-kn="${String(kn).replace(/"/g, '&quot;')}" style="
+                        padding:10px 16px;
+                        font-size:14px;
+                        font-weight:700;
+                        color:var(--royal);
+                        cursor:pointer;
+                        border-bottom:${i < matched.length - 1 ? '1px solid var(--border)' : 'none'};
+                        font-family:'Noto Sans Devanagari',sans-serif;
+                        transition:background 0.15s;
+                    " onmouseenter="this.classList.add('ksg-active')" onmouseleave="this.classList.remove('ksg-active')">${kn}</div>`
                 ).join('');
+                positionBox();
                 box.style.display = 'block';
-                box.scrollTop = 0;
             }
 
             inp.addEventListener('input', function () {
@@ -1137,15 +1418,6 @@
 
             inp.addEventListener('focus', function () {
                 if (this.value.trim()) showSuggestions(this.value.trim());
-            });
-
-            // Mouse interaction using event delegation
-            box.addEventListener('mouseover', function (e) {
-                const item = e.target.closest('.khasra-suggest-item');
-                if (item) {
-                    box.querySelectorAll('.khasra-suggest-item').forEach(c => c.classList.remove('active'));
-                    item.classList.add('active');
-                }
             });
 
             box.addEventListener('mousedown', function (e) {
@@ -1173,36 +1445,184 @@
                 this.scrollTop += e.deltaY;
             }, { passive: false });
 
-            // ── Keyboard Navigation ──
+            // ── Reposition on resize ──
+            window.addEventListener('resize', function () {
+                if (box.style.display !== 'none') positionBox();
+            });
+
+            function ksgClearActive() {
+                box.querySelectorAll('.ksg-item.ksg-active').forEach(el => el.classList.remove('ksg-active'));
+            }
+
             inp.addEventListener('keydown', function (e) {
-                if (box.style.display === 'none') return;
-                const items = box.querySelectorAll('.khasra-suggest-item');
-                const active = box.querySelector('.khasra-suggest-item.active');
-                let idx = Array.from(items).indexOf(active);
+                const open = box.style.display && box.style.display !== 'none';
+                const items = box.querySelectorAll('.ksg-item');
+                if (!open || !items.length) {
+                    if (e.key === 'Escape') { box.style.display = 'none'; e.preventDefault(); }
+                    return;
+                }
+
+                const active = box.querySelector('.ksg-item.ksg-active');
+                let idx = active ? [...items].indexOf(active) : -1;
 
                 if (e.key === 'ArrowDown') {
                     e.preventDefault();
-                    if (active) active.classList.remove('active');
-                    const next = items[idx + 1] || items[0];
-                    next.classList.add('active');
-                    next.scrollIntoView({ block: 'nearest' });
+                    ksgClearActive();
+                    idx = Math.min(idx + 1, items.length - 1);
+                    if (idx < 0) idx = 0;
+                    items[idx].classList.add('ksg-active');
+                    items[idx].scrollIntoView({ block: 'nearest' });
                 } else if (e.key === 'ArrowUp') {
                     e.preventDefault();
-                    if (active) active.classList.remove('active');
-                    const prev = items[idx - 1] || items[items.length - 1];
-                    prev.classList.add('active');
-                    prev.scrollIntoView({ block: 'nearest' });
+                    ksgClearActive();
+                    idx = Math.max(idx - 1, 0);
+                    items[idx].classList.add('ksg-active');
+                    items[idx].scrollIntoView({ block: 'nearest' });
                 } else if (e.key === 'Enter') {
-                    if (active) {
-                        e.preventDefault();
-                        inp.value = active.dataset.kn;
+                    if (e.isComposing) return;
+                    e.preventDefault();
+                    const pick = active || items[0];
+                    if (pick) {
+                        inp.value = pick.dataset.kn;
                         box.style.display = 'none';
+                        ksgClearActive();
                     }
                 } else if (e.key === 'Escape') {
+                    e.preventDefault();
                     box.style.display = 'none';
+                    ksgClearActive();
                 }
             });
         })();
+
+        // ── Nam (भूमिस्वामी) Autocomplete — ↑↓ Enter Esc ─────────
+        (function () {
+            const inp = document.getElementById('namVal');
+            const box = document.getElementById('namSuggest');
+
+            function positionBox() {
+                const rect = inp.getBoundingClientRect();
+                box.style.top    = (rect.bottom + 4) + 'px';
+                box.style.left   = rect.left + 'px';
+                box.style.width  = rect.width + 'px';
+            }
+
+            function showSuggestions(q) {
+                const list = window._farmerNamesList || [];
+                if (!q || !list.length) { box.style.display = 'none'; return; }
+
+                const qn = q.replace(/\s+/g, ' ').trim().toLowerCase();
+                const matched = list.filter(n => n && n.toLowerCase().includes(qn)).slice(0, 50);
+                if (!matched.length) { box.style.display = 'none'; return; }
+
+                box.innerHTML = matched.map((name, i) =>
+                    `<div class="ksg-item" data-name="${String(name).replace(/"/g, '&quot;')}" style="
+                        padding:10px 16px;
+                        font-size:14px;
+                        font-weight:700;
+                        color:var(--royal);
+                        cursor:pointer;
+                        border-bottom:${i < matched.length - 1 ? '1px solid var(--border)' : 'none'};
+                        font-family:'Noto Sans Devanagari',sans-serif;
+                        transition:background 0.15s;
+                    " onmouseenter="this.classList.add('ksg-active')" onmouseleave="this.classList.remove('ksg-active')">${name}</div>`
+                ).join('');
+                positionBox();
+                box.style.display = 'block';
+            }
+
+            function nsgClearActive() {
+                box.querySelectorAll('.ksg-item.ksg-active').forEach(el => el.classList.remove('ksg-active'));
+            }
+
+            inp.addEventListener('input', function () {
+                showSuggestions(this.value.trim());
+            });
+
+            inp.addEventListener('focus', function () {
+                if (this.value.trim()) showSuggestions(this.value.trim());
+            });
+
+            box.addEventListener('mousedown', function (e) {
+                const item = e.target.closest('[data-name]');
+                if (item) {
+                    inp.value = item.dataset.name;
+                    box.style.display = 'none';
+                    nsgClearActive();
+                    inp.focus();
+                }
+            });
+
+            document.addEventListener('click', function (e) {
+                if (!inp.contains(e.target) && !box.contains(e.target)) {
+                    box.style.display = 'none';
+                }
+            });
+
+            box.addEventListener('wheel', function (e) {
+                const atTop = this.scrollTop === 0;
+                const atBottom = this.scrollTop + this.clientHeight >= this.scrollHeight;
+                if ((e.deltaY < 0 && atTop) || (e.deltaY > 0 && atBottom)) return;
+                e.stopPropagation();
+                e.preventDefault();
+                this.scrollTop += e.deltaY;
+            }, { passive: false });
+
+            window.addEventListener('resize', function () {
+                if (box.style.display !== 'none') positionBox();
+            });
+
+            inp.addEventListener('keydown', function (e) {
+                const open = box.style.display && box.style.display !== 'none';
+                const items = box.querySelectorAll('.ksg-item');
+                if (!open || !items.length) {
+                    if (e.key === 'Escape') { box.style.display = 'none'; nsgClearActive(); }
+                    return;
+                }
+
+                const active = box.querySelector('.ksg-item.ksg-active');
+                let idx = active ? [...items].indexOf(active) : -1;
+
+                if (e.key === 'ArrowDown') {
+                    e.preventDefault();
+                    nsgClearActive();
+                    idx = Math.min(idx + 1, items.length - 1);
+                    if (idx < 0) idx = 0;
+                    items[idx].classList.add('ksg-active');
+                    items[idx].scrollIntoView({ block: 'nearest' });
+                } else if (e.key === 'ArrowUp') {
+                    e.preventDefault();
+                    nsgClearActive();
+                    idx = Math.max(idx - 1, 0);
+                    items[idx].classList.add('ksg-active');
+                    items[idx].scrollIntoView({ block: 'nearest' });
+                } else if (e.key === 'Enter') {
+                    if (e.isComposing) return;
+                    e.preventDefault();
+                    const pick = active || items[0];
+                    if (pick) {
+                        inp.value = pick.dataset.name;
+                        box.style.display = 'none';
+                        nsgClearActive();
+                    }
+                } else if (e.key === 'Escape') {
+                    e.preventDefault();
+                    box.style.display = 'none';
+                    nsgClearActive();
+                }
+            });
+        })();
+
+        // ── बसरा select: Esc से फोकस हटे —────────────────────────
+        document.getElementById('basraVal').addEventListener('keydown', function (e) {
+            if (e.key === 'Escape') {
+                this.blur();
+                e.preventDefault();
+            }
+        });
+
+
+        // ── Tab Switch ────────────────────────────────
         function switchTab(tab) {
             currentTab = tab;
             const isSearch = ['khasra', 'basra', 'nam'].includes(tab);
@@ -1305,9 +1725,233 @@
             return (mool && !mool.owner.includes('(ज. ब. न.)')) ? mool.owner : r.owner;
         }
 
+        function fieldMeansYes(val) {
+            const s = (val || '').toString().trim();
+            if (!s) return false;
+            if (/नहीं\s*है/i.test(s)) return false;
+            if (/^नहीं$/i.test(s)) return false;
+            return true;
+        }
+
+        function dcsEntryNaFallowLine(e) {
+            const bits = [];
+            if (e.naLand === 'Yes') bits.push('NA ' + Number(e.naArea).toFixed(3) + ' हे.');
+            if (e.fallowLand === 'Yes') bits.push('Fallow ' + Number(e.fallowArea).toFixed(3) + ' हे.');
+            return bits.length
+                ? '<div style="font-size:11px;color:#64748b;margin-top:4px;font-weight:600;">' + bits.join(' · ') + '</div>'
+                : '';
+        }
+
+        function cropLabelFromEntries(entries, fallback) {
+            if (!entries || entries.length <= 1) return fallback || '—';
+            const parts = entries.map((e, i) => {
+                const c = (e.cropName || '').trim();
+                if (!c || c === '--') return null;
+                return (i + 1) + ') ' + c;
+            }).filter(Boolean);
+            return parts.length ? parts.join(' · ') : (fallback || '—');
+        }
+
+        function kharifCropLabel(r) {
+            const ents = r.dcsKharifEntries || [];
+            if (r.kharifSource === 'DCS' && ents.length > 1)
+                return cropLabelFromEntries(ents, r.finalKharifCrop);
+            return r.finalKharifCrop || '—';
+        }
+
+        function rabiCropLabel(r) {
+            const ents = r.dcsRabiEntries || [];
+            if (ents.length > 1)
+                return cropLabelFromEntries(ents, r.finalRabiCrop);
+            return r.finalRabiCrop || '—';
+        }
+
+        function kharifAreaForNamedCrop(r, cropName) {
+            const cn = (cropName || '').trim();
+            if (r.kharifSource === 'DCS' && r.dcsKharifEntries && r.dcsKharifEntries.length) {
+                const sum = r.dcsKharifEntries.filter(e => (e.cropName || '').trim() === cn)
+                    .reduce((s, e) => s + parseFloat(e.cropArea || 0), 0);
+                if (sum > 0) return sum.toFixed(3);
+            }
+            if ((r.finalKharifCrop || '').trim() === cn) return (r.kharifCropAreaSum || r.kharifCropArea);
+            return '0';
+        }
+
+        function rabiAreaForNamedCrop(r, cropName) {
+            const cn = (cropName || '').trim();
+            if (r.dcsRabiEntries && r.dcsRabiEntries.length) {
+                const sum = r.dcsRabiEntries.filter(e => (e.cropName || '').trim() === cn)
+                    .reduce((s, e) => s + parseFloat(e.cropArea || 0), 0);
+                if (sum > 0) return sum.toFixed(3);
+            }
+            if ((r.finalRabiCrop || '').trim() === cn) return (r.rabiCropAreaSum || r.rabiCropArea);
+            return '0';
+        }
+
+        function recordHasKharifCropName(r, cropName) {
+            const cn = (cropName || '').trim();
+            if (r.kharifSource === 'DCS' && r.dcsKharifEntries && r.dcsKharifEntries.length)
+                return r.dcsKharifEntries.some(e => (e.cropName || '').trim() === cn);
+            return (r.finalKharifCrop || '').trim() === cn;
+        }
+
+        function recordHasRabiCropName(r, cropName) {
+            const cn = (cropName || '').trim();
+            if (r.dcsRabiEntries && r.dcsRabiEntries.length)
+                return r.dcsRabiEntries.some(e => (e.cropName || '').trim() === cn);
+            return (r.finalRabiCrop || '').trim() === cn;
+        }
+
+        function uniqueKharifCropNamesFromRecords(arr) {
+            const set = new Set();
+            (arr || []).forEach(r => {
+                const ents = r.dcsKharifEntries || [];
+                if (r.kharifSource === 'DCS' && ents.length) {
+                    ents.forEach(e => {
+                        const c = (e.cropName || '').trim();
+                        if (c && c !== '--') set.add(c);
+                    });
+                } else {
+                    const f = (r.finalKharifCrop || '').trim();
+                    if (f) set.add(f);
+                }
+            });
+            return [...set];
+        }
+
+        function uniqueRabiCropNamesFromRecords(arr) {
+            const set = new Set();
+            (arr || []).forEach(r => {
+                const ents = r.dcsRabiEntries || [];
+                if (ents.length) {
+                    ents.forEach(e => {
+                        const c = (e.cropName || '').trim();
+                        if (c && c !== '--') set.add(c);
+                    });
+                } else {
+                    const f = (r.finalRabiCrop || '').trim();
+                    if (f) set.add(f);
+                }
+            });
+            return [...set];
+        }
+
+        function getKharifCropBlocksHTML(r) {
+            const kList = r.dcsKharifEntries || [];
+            if (r.kharifSource === 'Bhuiyya') {
+                return '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+                    '<span style="font-size:11px; font-weight:700; color:#065f46; background:#d1fae5; border-radius:5px; padding:2px 8px;">☀️ खरीफ</span>' +
+                    '<div style="flex:1; display:flex; align-items:center; gap:8px; justify-content:flex-end; flex-wrap:wrap;">' +
+                    '<span style="font-size:13px; font-weight:700; color:var(--text-main);">' + (r.finalKharifCrop || '—') + '</span>' +
+                    '<span style="font-size:12px; font-weight:600; color:var(--text-muted);">' + (r.finalKharifCrop ? (r.kharifCropAreaSum || r.kharifCropArea) + ' हे.' : '—') + '</span>' +
+                    '<span style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:800;">Bhuiyya</span>' +
+                    '</div></div>';
+            }
+            if (r.kharifSource === 'DCS' && !kList.length && (r.finalKharifCrop || parseFloat(r.kharifCropArea || 0))) {
+                const c = r.finalKharifCrop || '—';
+                const a = r.kharifCropAreaSum || r.kharifCropArea;
+                return '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+                    '<span style="font-size:11px; font-weight:700; color:#065f46; background:#d1fae5; border-radius:5px; padding:2px 8px;">☀️ खरीफ</span>' +
+                    '<div style="flex:1; display:flex; align-items:center; gap:8px; justify-content:flex-end; flex-wrap:wrap;">' +
+                    '<span style="font-size:13px; font-weight:700; color:var(--text-main);">' + c + '</span>' +
+                    '<span style="font-size:12px; font-weight:600; color:var(--text-muted);">' + (c !== '—' ? a + ' हे.' : '—') + '</span>' +
+                    '<span style="background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:800;">DCS</span>' +
+                    '</div></div>';
+            }
+            if (r.kharifSource !== 'DCS' || !kList.length) {
+                return '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+                    '<span style="font-size:11px; font-weight:700; color:#065f46; background:#d1fae5; border-radius:5px; padding:2px 8px;">☀️ खरीफ</span>' +
+                    '<div style="flex:1; display:flex; align-items:center; gap:8px; justify-content:flex-end;"><span style="font-size:13px; font-weight:700;">—</span></div></div>';
+            }
+            if (kList.length === 1) {
+                const e = kList[0];
+                const c = e.cropName || '—';
+                const a = Number(e.cropArea).toFixed(3);
+                return '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+                    '<span style="font-size:11px; font-weight:700; color:#065f46; background:#d1fae5; border-radius:5px; padding:2px 8px;">☀️ खरीफ</span>' +
+                    '<div style="flex:1; display:flex; align-items:center; gap:8px; justify-content:flex-end; flex-wrap:wrap;">' +
+                    '<span style="font-size:13px; font-weight:700; color:var(--text-main);">' + c + '</span>' +
+                    '<span style="font-size:12px; font-weight:600; color:var(--text-muted);">' + (c !== '—' ? a + ' हे.' : '—') + '</span>' +
+                    '<span style="background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:800;">DCS</span>' +
+                    '</div></div>';
+            }
+            let out = '';
+            kList.forEach((e, idx) => {
+                const c = e.cropName || '—';
+                const a = Number(e.cropArea).toFixed(3);
+                out += '<div style="background:#f0fdf4;border:1px solid #86efac;border-radius:8px;padding:8px 10px;margin-bottom:6px;">' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">' +
+                    '<span style="font-size:10px;font-weight:800;color:#166534;text-transform:uppercase;letter-spacing:0.04em;">☀️ DCS खरीफ ' + (idx + 1) + '/' + kList.length + '</span>' +
+                    '<span style="font-size:12px;font-weight:800;color:var(--text-main);">' + c + ' <span style="color:#64748b;font-weight:700;">· ' + a + ' हे.</span></span>' +
+                    '<span style="background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:800;">DCS</span>' +
+                    '</div>' + dcsEntryNaFallowLine(e) + '</div>';
+            });
+            return out;
+        }
+
+        function getRabiCropBlocksHTML(r) {
+            const rList = r.dcsRabiEntries || [];
+            if (!rList.length) {
+                return '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+                    '<span style="font-size:11px; font-weight:700; color:#1e40af; background:#dbeafe; border-radius:5px; padding:2px 8px;">❄️ रबी</span>' +
+                    '<div style="flex:1; display:flex; align-items:center; gap:8px; justify-content:flex-end;">' +
+                    '<span style="font-size:13px; font-weight:700; color:var(--text-main);">' + (r.finalRabiCrop || '—') + '</span>' +
+                    '<span style="font-size:12px; font-weight:600; color:var(--text-muted);">' + (r.finalRabiCrop ? ((r.rabiCropAreaSum || r.rabiCropArea) + ' हे.') : '—') + '</span>' +
+                    '</div></div>';
+            }
+            if (rList.length === 1) {
+                const e = rList[0];
+                const c = e.cropName || '—';
+                const a = Number(e.cropArea).toFixed(3);
+                return '<div style="display:flex; justify-content:space-between; align-items:center;">' +
+                    '<span style="font-size:11px; font-weight:700; color:#1e40af; background:#dbeafe; border-radius:5px; padding:2px 8px;">❄️ रबी</span>' +
+                    '<div style="flex:1; display:flex; align-items:center; gap:8px; justify-content:flex-end; flex-wrap:wrap;">' +
+                    '<span style="font-size:13px; font-weight:700; color:var(--text-main);">' + c + '</span>' +
+                    '<span style="font-size:12px; font-weight:600; color:var(--text-muted);">' + (c !== '—' ? a + ' हे.' : '—') + '</span>' +
+                    '</div></div>';
+            }
+            let out = '';
+            rList.forEach((e, idx) => {
+                const c = e.cropName || '—';
+                const a = Number(e.cropArea).toFixed(3);
+                out += '<div style="background:#eff6ff;border:1px solid #93c5fd;border-radius:8px;padding:8px 10px;margin-bottom:6px;">' +
+                    '<div style="display:flex;justify-content:space-between;align-items:center;flex-wrap:wrap;gap:6px;">' +
+                    '<span style="font-size:10px;font-weight:800;color:#1e40af;text-transform:uppercase;letter-spacing:0.04em;">❄️ DCS रबी ' + (idx + 1) + '/' + rList.length + '</span>' +
+                    '<span style="font-size:12px;font-weight:800;color:var(--text-main);">' + c + ' <span style="color:#64748b;font-weight:700;">· ' + a + ' हे.</span></span>' +
+                    '</div>' + dcsEntryNaFallowLine(e) + '</div>';
+            });
+            return out;
+        }
+
+        function getLandDetailBadgesHTML(r) {
+            const t = (r.type || '').trim();
+            let irrCls = 'lmb-irr-unknown';
+            let irrText = 'सिंचित/असिंचित: —';
+            if (t) {
+                if (t.includes('असिंचित')) { irrCls = 'lmb-asinchit'; irrText = 'असिंचित भूमि'; }
+                else if (t.includes('सिंचित')) { irrCls = 'lmb-sinchit'; irrText = 'सिंचित भूमि'; }
+                else { irrText = t; }
+            }
+
+            const charaiYes = fieldMeansYes(r.charai);
+            const ceilYes = fieldMeansYes(r.ceiling);
+
+            const nistarRegistered = !!(r.isNistarEntry
+                || (r.nistar && String(r.nistar).trim())
+                || (r.nistarPatrakVivaran && String(r.nistarPatrakVivaran).trim()));
+
+            return `
+          <div class="land-badges-row" aria-label="भूमि विवरण बैज">
+            <span class="land-mini-badge ${irrCls}">💧 ${irrText}</span>
+            <span class="land-mini-badge ${charaiYes ? 'lmb-yes' : 'lmb-no'}">🌿 ${charaiYes ? 'चराई भूमि है' : 'चराई भूमि नहीं है'}</span>
+            <span class="land-mini-badge ${ceilYes ? 'lmb-yes' : 'lmb-no'}">⚖️ ${ceilYes ? 'सीलिंग भूमि है' : 'सीलिंग भूमि नहीं है'}</span>
+            <span class="land-mini-badge ${nistarRegistered ? 'lmb-nistar-yes' : 'lmb-nistar-no'}">📋 ${nistarRegistered ? 'निस्तार पत्रक में दर्ज है' : 'निस्तार पत्रक में दर्ज नहीं है'}</span>
+          </div>`;
+        }
+
         function getCardHTML(r) {
             const hdrClass = currentTab === 'nam' ? 'card-header-khasra' : `card-header-${currentTab}`;
-            const typeBadge = r.type.includes('असिंचित') ? 'asinchai' : 'sinchai';
+            const typeBadge = (r.type && r.type.includes('असिंचित')) ? 'asinchai' : 'sinchai';
             return `
         <div class="${hdrClass}" style="padding:16px 20px; display:flex; justify-content:space-between; align-items:flex-start;">
           <div>
@@ -1320,6 +1964,7 @@
           <button onclick="event.stopPropagation();printSingleRecord(${JSON.stringify(r).replace(/"/g, '&quot;')})" style="background:rgba(255,255,255,0.2);border:1px solid rgba(255,255,255,0.35);color:#fff;border-radius:8px;padding:5px 12px;font-size:11px;font-weight:700;cursor:pointer;white-space:nowrap;">🖨 Print</button>
         </div>
         <div style="padding:18px 20px; display:flex; flex-direction:column; gap:14px;">
+          ${getLandDetailBadgesHTML(r)}
           <div style="display:grid; grid-template-columns:1fr 1fr; gap:10px;">
             <div class="stat-chip">
               <div class="stat-chip-label">खसरा नं.</div>
@@ -1350,28 +1995,8 @@
             
             <div style="display:flex; flex-direction:column; gap:6px;">
               
-              <!-- खरीफ फसल -->
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:11px; font-weight:700; color:#065f46; background:#d1fae5; border-radius:5px; padding:2px 8px;">☀️ खरीफ</span>
-                <div style="flex:1; display:flex; align-items:center; gap:8px; justify-content:flex-end;">
-                  <span style="font-size:13px; font-weight:700; color:var(--text-main);">${r.finalKharifCrop || '—'}</span>
-                  <span style="font-size:12px; font-weight:600; color:var(--text-muted);">${r.finalKharifCrop ? r.kharifCropArea + ' हे.' : '—'}</span>
-                  ${(r.kharifSource === 'DCS'
-                    ? '<span style="background:#dbeafe;color:#1e40af;border:1px solid #93c5fd;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:800;">DCS</span>'
-                    : r.kharifSource === 'Bhuiyya'
-                    ? '<span style="background:#fef3c7;color:#92400e;border:1px solid #fcd34d;border-radius:5px;padding:1px 7px;font-size:10px;font-weight:800;">Bhuiyya</span>'
-                    : '')}
-                </div>
-              </div>
-              
-              <!-- रबी फसल -->
-              <div style="display:flex; justify-content:space-between; align-items:center;">
-                <span style="font-size:11px; font-weight:700; color:#1e40af; background:#dbeafe; border-radius:5px; padding:2px 8px;">❄️ रबी</span>
-                <div style="flex:1; display:flex; align-items:center; gap:8px; justify-content:flex-end;">
-                  <span style="font-size:13px; font-weight:700; color:var(--text-main);">${r.finalRabiCrop || '—'}</span>
-                  <span style="font-size:12px; font-weight:600; color:var(--text-muted);">${r.finalRabiCrop ? r.rabiCropArea + ' हे.' : '—'}</span>
-                </div>
-              </div>
+              ${getKharifCropBlocksHTML(r)}
+              ${getRabiCropBlocksHTML(r)}
               
               ${r.isDufasali ? `
               <div style="background:#ede9fe; border:1px solid #c4b5fd; border-radius:8px; padding:6px 10px; display:flex; justify-content:space-between; align-items:center; margin-top:2px;">
@@ -1379,31 +2004,26 @@
                 <span style="font-size:13px; font-weight:900; color:#4c1d95;">${r.dufasaliArea} हे.</span>
               </div>` : ''}
               
-              `+ (r.naLandK === 'Yes' ?
+              `+ (r.kharifSource === 'DCS' && (r.dcsKharifEntries || []).length > 1 ? '' : (r.naLandK === 'Yes' ?
                 '<div style="display:flex;justify-content:space-between;align-items:center;background:#fef3c7;border-radius:6px;padding:5px 10px;margin-top:4px;">' +
                 '<span style="font-size:11px;font-weight:700;color:#92400e;">🏢 NA Land (खरीफ)</span>' +
-                '<span style="font-size:12px;font-weight:800;color:#78350f;">' + r.naAreaK + ' हे.</span></div>' : '') 
-              + (r.fallowLandK === 'Yes' ?
+                '<span style="font-size:12px;font-weight:800;color:#78350f;">' + r.naAreaK + ' हे.</span></div>' : '')) 
+              + (r.kharifSource === 'DCS' && (r.dcsKharifEntries || []).length > 1 ? '' : (r.fallowLandK === 'Yes' ?
                 '<div style="display:flex;justify-content:space-between;align-items:center;background:#fef3c7;border-radius:6px;padding:5px 10px;margin-top:4px;">' +
                 '<span style="font-size:11px;font-weight:700;color:#92400e;">🏜️ Fallow Land (खरीफ)</span>' +
-                '<span style="font-size:12px;font-weight:800;color:#78350f;">' + r.fallowAreaK + ' हे.</span></div>' : '') 
-              + (r.naLandR === 'Yes' ?
+                '<span style="font-size:12px;font-weight:800;color:#78350f;">' + r.fallowAreaK + ' हे.</span></div>' : '')) 
+              + ((r.dcsRabiEntries || []).length > 1 ? '' : (r.naLandR === 'Yes' ?
                 '<div style="display:flex;justify-content:space-between;align-items:center;background:#dbeafe;border-radius:6px;padding:5px 10px;margin-top:4px;">' +
                 '<span style="font-size:11px;font-weight:700;color:#1e40af;">🏢 NA Land (रबी)</span>' +
-                '<span style="font-size:12px;font-weight:800;color:#1e3a8a;">' + r.naAreaR + ' हे.</span></div>' : '') 
-              + (r.fallowLandR === 'Yes' ?
+                '<span style="font-size:12px;font-weight:800;color:#1e3a8a;">' + r.naAreaR + ' हे.</span></div>' : '')) 
+              + ((r.dcsRabiEntries || []).length > 1 ? '' : (r.fallowLandR === 'Yes' ?
                 '<div style="display:flex;justify-content:space-between;align-items:center;background:#dbeafe;border-radius:6px;padding:5px 10px;margin-top:4px;">' +
                 '<span style="font-size:11px;font-weight:700;color:#1e40af;">🏜️ Fallow Land (रबी)</span>' +
-                '<span style="font-size:12px;font-weight:800;color:#1e3a8a;">' + r.fallowAreaR + ' हे.</span></div>' : '') + `
+                '<span style="font-size:12px;font-weight:800;color:#1e3a8a;">' + r.fallowAreaR + ' हे.</span></div>' : '')) + `
               
             </div>
           </div>
 
-          ${(r.charai || r.ceiling) ? `
-          <div style="display:flex; gap:8px; flex-wrap:wrap; border-top:1px solid var(--border); padding-top:12px;">
-            ${r.charai ? `<span style="background:#fef9c3; border:1px solid #fde047; color:#713f12; border-radius:8px; padding:5px 12px; font-size:12px; font-weight:700;">🌿 चराई: ${r.charai}</span>` : ''}
-            ${r.ceiling ? `<span style="background:#fce7f3; border:1px solid #f9a8d4; color:#831843; border-radius:8px; padding:5px 12px; font-size:12px; font-weight:700;">⚖️ सीलिंग: ${r.ceiling}</span>` : ''}
-          </div>` : ''}
           ${r.nistar ? `
           <div style="background:#fffbeb; border:1px solid #fde68a; border-radius:10px; padding:10px 14px; border-top:1px solid var(--border); padding-top:12px;">
             <div style="font-size:10px; font-weight:700; color:#92400e; text-transform:uppercase; letter-spacing:0.07em; margin-bottom:6px;">निस्तार विवरण</div>
@@ -1465,11 +2085,11 @@
                 const totalArea = found.reduce((s, r) => s + parseFloat(r.area), 0).toFixed(3);
                 
                 // Crop Summary for Portfolio
-                const kArea = found.reduce((s, r) => s + parseFloat(r.kharifCropArea || 0), 0).toFixed(3);
-                const rArea = found.reduce((s, r) => s + parseFloat(r.rabiCropArea || 0), 0).toFixed(3);
+                const kArea = found.reduce((s, r) => s + parseFloat(r.kharifCropAreaSum || r.kharifCropArea || 0), 0).toFixed(3);
+                const rArea = found.reduce((s, r) => s + parseFloat(r.rabiCropAreaSum || r.rabiCropArea || 0), 0).toFixed(3);
                 const dArea = found.reduce((s, r) => s + parseFloat(r.dufasaliArea || 0), 0).toFixed(3);
-                const kCrops = [...new Set(found.map(r => r.finalKharifCrop).filter(Boolean))].join(', ') || '—';
-                const rCrops = [...new Set(found.map(r => r.finalRabiCrop).filter(Boolean))].join(', ') || '—';
+                const kCrops = uniqueKharifCropNamesFromRecords(found).join(', ') || '—';
+                const rCrops = uniqueRabiCropNamesFromRecords(found).join(', ') || '—';
 
                 const banner = document.createElement('div');
                 banner.className = 'portfolio-banner';
@@ -1509,13 +2129,13 @@
             const blankRecs2  = found.filter(r => r.kharifDCSBlank && r.kharifSource === '');
 
             const dcsCount    = dcsRecs.length;
-            const dcsRakba    = dcsRecs.reduce((s,r) => s + parseFloat(r.kharifCropArea||0), 0).toFixed(3);
+            const dcsRakba    = dcsRecs.reduce((s,r) => s + parseFloat(r.kharifCropAreaSum||r.kharifCropArea||0), 0).toFixed(3);
             const nonDcsCount = nonDcsRecs.length;
-            const nonDcsRakba = nonDcsRecs.reduce((s,r) => s + parseFloat(r.kharifCropArea||0), 0).toFixed(3);
+            const nonDcsRakba = nonDcsRecs.reduce((s,r) => s + parseFloat(r.kharifCropAreaSum||r.kharifCropArea||0), 0).toFixed(3);
             const blankCount2 = blankRecs2.length;
-            const blankRakba2 = blankRecs2.reduce((s,r) => s + parseFloat(r.kharifCropArea||0), 0).toFixed(3);
+            const blankRakba2 = blankRecs2.reduce((s,r) => s + parseFloat(r.kharifCropAreaSum||r.kharifCropArea||0), 0).toFixed(3);
             const totalCount  = found.length;
-            const totalRakba  = found.reduce((s,r) => s + parseFloat(r.kharifCropArea||0), 0).toFixed(3);
+            const totalRakba  = found.reduce((s,r) => s + parseFloat(r.kharifCropAreaSum||r.kharifCropArea||0), 0).toFixed(3);
 
             window.found_ref = found;
 
@@ -1552,6 +2172,34 @@
             const pw = window.open('', '_blank');
             if (!pw) { toast('Popup blocked! Allow popups and try again.', 'error'); return; }
             const sinchType = r.type && !r.type.includes('असिंचित') ? 'badge-green' : 'badge-orange';
+            const kEnt = r.dcsKharifEntries || [];
+            const rEnt = r.dcsRabiEntries || [];
+
+            let printKharifRows = '';
+            if (r.kharifSource === 'Bhuiyya' && r.finalKharifCrop) {
+                printKharifRows = `<tr><th>☀️ खरीफ फसल</th><td>${r.finalKharifCrop} &nbsp;<span style="background:#fef3c7;color:#92400e;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:800;">Bhuiyya</span></td></tr>
+  <tr><th>☀️ खरीफ रकबा</th><td>${r.kharifCropAreaSum || r.kharifCropArea} हे.</td></tr>`;
+            } else if (r.kharifSource === 'DCS' && kEnt.length === 1) {
+                printKharifRows = `<tr><th>☀️ खरीफ फसल</th><td>${(kEnt[0].cropName || r.finalKharifCrop || '—')} &nbsp;<span style="background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:800;">DCS</span></td></tr>
+  <tr><th>☀️ खरीफ रकबा</th><td>${Number(kEnt[0].cropArea).toFixed(3)} हे.</td></tr>`;
+            } else if (r.kharifSource === 'DCS' && kEnt.length > 1) {
+                printKharifRows = kEnt.map((e, i) => `<tr><th>☀️ खरीफ DCS ${i + 1}/${kEnt.length}</th><td>${e.cropName || '—'} &nbsp;<span style="background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:800;">DCS</span></td></tr>
+  <tr><th>☀️ खरीफ ${i + 1} रकबा</th><td>${Number(e.cropArea).toFixed(3)} हे.</td></tr>`).join('\n  ');
+            } else {
+                printKharifRows = '<tr><th>☀️ खरीफ फसल</th><td>—</td></tr>';
+            }
+
+            let printRabiRows = '';
+            if (rEnt.length === 1) {
+                printRabiRows = `<tr><th>❄️ रबी फसल</th><td>${rEnt[0].cropName || r.finalRabiCrop || '—'}</td></tr>
+  <tr><th>❄️ रबी रकबा</th><td>${Number(rEnt[0].cropArea).toFixed(3)} हे.</td></tr>`;
+            } else if (rEnt.length > 1) {
+                printRabiRows = rEnt.map((e, i) => `<tr><th>❄️ रबी DCS ${i + 1}/${rEnt.length}</th><td>${e.cropName || '—'}</td></tr>
+  <tr><th>❄️ रबी ${i + 1} रकबा</th><td>${Number(e.cropArea).toFixed(3)} हे.</td></tr>`).join('\n  ');
+            } else {
+                printRabiRows = '<tr><th>❄️ रबी फसल</th><td>—</td></tr>';
+            }
+
             pw.document.write(`<!DOCTYPE html>
 <html lang="hi"><head>
 <meta charset="UTF-8">
@@ -1584,15 +2232,13 @@
   <tr><th>👤 भूमिस्वामी</th><td>${getFullOwner(r)}</td></tr>
   <tr><th>📐 क्षेत्रफल (हेक्टेयर)</th><td>${r.area} हे.</td></tr>
   <tr><th>🌱 भूमि का प्रकार</th><td>${r.type || '—'}</td></tr>
-  ${r.finalKharifCrop ? `<tr><th>☀️ खरीफ फसल</th><td>${r.finalKharifCrop} &nbsp;<span style="background:#dbeafe;color:#1e40af;border-radius:5px;padding:2px 8px;font-size:12px;font-weight:800;">${r.kharifSource || ''}</span></td></tr>
-  <tr><th>☀️ खरीफ रकबा</th><td>${r.kharifCropArea} हे.</td></tr>` : '<tr><th>☀️ खरीफ फसल</th><td>—</td></tr>'}
-  ${r.finalRabiCrop ? `<tr><th>❄️ रबी फसल</th><td>${r.finalRabiCrop}</td></tr>
-  <tr><th>❄️ रबी रकबा</th><td>${r.rabiCropArea} हे.</td></tr>` : '<tr><th>❄️ रबी फसल</th><td>—</td></tr>'}
+  ${printKharifRows}
+  ${printRabiRows}
   ${r.isDufasali ? `<tr><th>🌾 दुफसली रकबा</th><td style="color:#5b21b6;font-weight:900;">${r.dufasaliArea} हे.</td></tr>` : ''}
-  ${r.naLandK === 'Yes' ? `<tr><th>🏢 NA Land (खरीफ)</th><td>${r.naAreaK} हे.</td></tr>` : ''}
-  ${r.fallowLandK === 'Yes' ? `<tr><th>🏜️ Fallow Land (खरीफ)</th><td>${r.fallowAreaK} हे.</td></tr>` : ''}
-  ${r.naLandR === 'Yes' ? `<tr><th>🏢 NA Land (रबी)</th><td>${r.naAreaR} हे.</td></tr>` : ''}
-  ${r.fallowLandR === 'Yes' ? `<tr><th>🏜️ Fallow Land (रबी)</th><td>${r.fallowAreaR} हे.</td></tr>` : ''}
+  ${(r.kharifSource === 'DCS' && kEnt.length > 1) ? '' : (r.naLandK === 'Yes' ? `<tr><th>🏢 NA Land (खरीफ)</th><td>${r.naAreaK} हे.</td></tr>` : '')}
+  ${(r.kharifSource === 'DCS' && kEnt.length > 1) ? '' : (r.fallowLandK === 'Yes' ? `<tr><th>🏜️ Fallow Land (खरीफ)</th><td>${r.fallowAreaK} हे.</td></tr>` : '')}
+  ${(rEnt.length > 1) ? '' : (r.naLandR === 'Yes' ? `<tr><th>🏢 NA Land (रबी)</th><td>${r.naAreaR} हे.</td></tr>` : '')}
+  ${(rEnt.length > 1) ? '' : (r.fallowLandR === 'Yes' ? `<tr><th>🏜️ Fallow Land (रबी)</th><td>${r.fallowAreaR} हे.</td></tr>` : '')}
   ${r.charai ? `<tr><th>🌿 चराई भूमि</th><td>${r.charai}</td></tr>` : ''}
   ${r.ceiling ? `<tr><th>⚖️ सीलिंग भूमि</th><td>${r.ceiling}</td></tr>` : ''}
   ${r.nistar ? `<tr><th>📝 निस्तार विवरण</th><td>${r.nistar}</td></tr>` : ''}
@@ -1617,10 +2263,10 @@
                 <td>${r.owner}</td>
                 <td style="text-align:right;font-weight:800;">${r.area}</td>
                 <td>${r.type || '—'}</td>
-                <td>${r.finalKharifCrop || '—'}</td>
-                <td style="text-align:right;">${r.kharifCropArea || '0'}</td>
-                <td>${r.finalRabiCrop || '—'}</td>
-                <td style="text-align:right;">${r.rabiCropArea || '0'}</td>
+                <td>${kharifCropLabel(r)}</td>
+                <td style="text-align:right;">${r.kharifCropAreaSum || r.kharifCropArea || '0'}</td>
+                <td>${rabiCropLabel(r)}</td>
+                <td style="text-align:right;">${r.rabiCropAreaSum || r.rabiCropArea || '0'}</td>
                 <td style="text-align:right; font-weight:800; color:#3730a3;">${r.dufasaliArea || '0'}</td>
                 <td>${r.naLandK === 'Yes' ? r.naAreaK + ' हे.' : '—'}</td>
                 <td>${r.fallowLandK === 'Yes' ? r.fallowAreaK + ' हे.' : '—'}</td>
@@ -1722,10 +2368,10 @@
                 <td style="text-align:center;">${r.bn}</td>
                 <td style="text-align:right;font-weight:800;">${r.area}</td>
                 <td>${r.type || '—'}</td>
-                <td>${r.finalKharifCrop || '—'}</td>
-                <td style="text-align:right;">${r.kharifCropArea || '0'}</td>
-                <td>${r.finalRabiCrop || '—'}</td>
-                <td style="text-align:right;">${r.rabiCropArea || '0'}</td>
+                <td>${kharifCropLabel(r)}</td>
+                <td style="text-align:right;">${r.kharifCropAreaSum || r.kharifCropArea || '0'}</td>
+                <td>${rabiCropLabel(r)}</td>
+                <td style="text-align:right;">${r.rabiCropAreaSum || r.rabiCropArea || '0'}</td>
                 <td style="text-align:right; font-weight:800; color:#3730a3;">${r.dufasaliArea || '0'}</td>
                 <td>${r.naLandK === 'Yes' ? r.naAreaK + ' हे.' : '—'}</td>
                 <td>${r.fallowLandK === 'Yes' ? r.fallowAreaK + ' हे.' : '—'}</td>
@@ -1844,10 +2490,11 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             if (!basraRecs.length) return;
 
             const totalArea = basraRecs.reduce((s, r) => s + parseFloat(r.area || 0), 0).toFixed(3);
-            const kArea = basraRecs.reduce((s, r) => s + parseFloat(r.kharifCropArea || 0), 0).toFixed(3);
+            const kArea = basraRecs.reduce((s, r) => s + parseFloat(r.kharifCropAreaSum || r.kharifCropArea || 0), 0).toFixed(3);
+            const rArea = basraRecs.reduce((s, r) => s + parseFloat(r.rabiCropAreaSum || r.rabiCropArea || 0), 0).toFixed(3);
             const dArea = basraRecs.reduce((s, r) => s + parseFloat(r.dufasaliArea || 0), 0).toFixed(3);
-            const kCrops = [...new Set(basraRecs.map(r => r.finalKharifCrop).filter(Boolean))].join(' / ') || '—';
-            const rCrops = [...new Set(basraRecs.map(r => r.finalRabiCrop).filter(Boolean))].join(' / ') || '—';
+            const kCrops = uniqueKharifCropNamesFromRecords(basraRecs).join(' / ') || '—';
+            const rCrops = uniqueRabiCropNamesFromRecords(basraRecs).join(' / ') || '—';
 
             let csvContent = "\uFEFF"; // BOM for Excel UTF-8
             csvContent += `पोर्टफोलियो रिपोर्ट: ${owner}\n`;
@@ -1867,10 +2514,10 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                     r.bn,
                     r.area,
                     r.type || '—',
-                    r.finalKharifCrop || '—',
-                    r.kharifCropArea || '0',
-                    r.finalRabiCrop || '—',
-                    r.rabiCropArea || '0',
+                    kharifCropLabel(r),
+                    r.kharifCropAreaSum || r.kharifCropArea || '0',
+                    rabiCropLabel(r),
+                    r.rabiCropAreaSum || r.rabiCropArea || '0',
                     r.dufasaliArea || '0',
                     r.naLandK === 'Yes' ? r.naAreaK : '—',
                     r.fallowLandK === 'Yes' ? r.fallowAreaK : '—',
@@ -1911,10 +2558,11 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             if (!farmerRecs.length) return;
 
             const totalArea = farmerRecs.reduce((s, r) => s + parseFloat(r.area || 0), 0).toFixed(3);
-            const kArea = farmerRecs.reduce((s, r) => s + parseFloat(r.kharifCropArea || 0), 0).toFixed(3);
+            const kArea = farmerRecs.reduce((s, r) => s + parseFloat(r.kharifCropAreaSum || r.kharifCropArea || 0), 0).toFixed(3);
+            const rArea = farmerRecs.reduce((s, r) => s + parseFloat(r.rabiCropAreaSum || r.rabiCropArea || 0), 0).toFixed(3);
             const dArea = farmerRecs.reduce((s, r) => s + parseFloat(r.dufasaliArea || 0), 0).toFixed(3);
-            const kCrops = [...new Set(farmerRecs.map(r => r.finalKharifCrop).filter(Boolean))].join(' / ') || '—';
-            const rCrops = [...new Set(farmerRecs.map(r => r.finalRabiCrop).filter(Boolean))].join(' / ') || '—';
+            const kCrops = uniqueKharifCropNamesFromRecords(farmerRecs).join(' / ') || '—';
+            const rCrops = uniqueRabiCropNamesFromRecords(farmerRecs).join(' / ') || '—';
 
             let csvContent = "\uFEFF"; // BOM for Excel UTF-8
             csvContent += `किसान पोर्टफोलियो रिपोर्ट: ${owner}\n`;
@@ -1933,10 +2581,10 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                     r.bn,
                     r.area,
                     r.type || '—',
-                    r.finalKharifCrop || '—',
-                    r.kharifCropArea || '0',
-                    r.finalRabiCrop || '—',
-                    r.rabiCropArea || '0',
+                    kharifCropLabel(r),
+                    r.kharifCropAreaSum || r.kharifCropArea || '0',
+                    rabiCropLabel(r),
+                    r.rabiCropAreaSum || r.rabiCropArea || '0',
                     r.dufasaliArea || '0',
                     r.naLandK === 'Yes' ? r.naAreaK : '—',
                     r.fallowLandK === 'Yes' ? r.fallowAreaK : '—',
@@ -2461,13 +3109,13 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             const blankRecs   = gramRecs.filter(r => r.kharifDCSBlank === true && r.kharifSource === '');
 
             const dcsCount    = dcsRecs.length;
-            const dcsRakba    = dcsRecs.reduce((s,r) => s + parseFloat(r.kharifCropArea||0), 0).toFixed(3);
+            const dcsRakba    = dcsRecs.reduce((s,r) => s + parseFloat(r.kharifCropAreaSum||r.kharifCropArea||0), 0).toFixed(3);
             const bhuiyyaCount= bhuiyyaRecs.length;
-            const bhuiyyaRakba= bhuiyyaRecs.reduce((s,r) => s + parseFloat(r.kharifCropArea||0), 0).toFixed(3);
+            const bhuiyyaRakba= bhuiyyaRecs.reduce((s,r) => s + parseFloat(r.kharifCropAreaSum||r.kharifCropArea||0), 0).toFixed(3);
             const blankCount  = blankRecs.length;
-            const blankRakba  = blankRecs.reduce((s,r) => s + parseFloat(r.kharifCropArea||0), 0).toFixed(3);
+            const blankRakba  = blankRecs.reduce((s,r) => s + parseFloat(r.kharifCropAreaSum||r.kharifCropArea||0), 0).toFixed(3);
             const totalCount  = gramRecs.length;
-            const totalRakba  = gramRecs.reduce((s,r) => s + parseFloat(r.kharifCropArea||0), 0).toFixed(3);
+            const totalRakba  = gramRecs.reduce((s,r) => s + parseFloat(r.kharifCropAreaSum||r.kharifCropArea||0), 0).toFixed(3);
 
             // Tab bar (insert before table, inside cropSummaryContainer)
             const existingTabBar = document.getElementById('cropFilterTabBar');
@@ -2507,10 +3155,10 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                     <td style="padding:10px 8px; font-weight:800; color:#1e40af;">${r.kn}</td>
                     <td style="padding:10px 8px; color:#475569;">${r.bn || '—'}</td>
                     <td style="padding:10px 8px; color:#1e293b; font-weight:700;">${r.owner}</td>
-                    <td style="padding:10px 8px; color:#065f46; font-weight:600;">${r.finalKharifCrop || '—'}</td>
-                    <td style="padding:10px 8px; color:#065f46; font-weight:700;">${r.kharifCropArea > 0 ? r.kharifCropArea : '—'}</td>
-                    <td style="padding:10px 8px; color:#1e40af; font-weight:600;">${r.finalRabiCrop || '—'}</td>
-                    <td style="padding:10px 8px; color:#1e40af; font-weight:700;">${r.rabiCropArea > 0 ? r.rabiCropArea : '—'}</td>
+                    <td style="padding:10px 8px; color:#065f46; font-weight:600;">${kharifCropLabel(r)}</td>
+                    <td style="padding:10px 8px; color:#065f46; font-weight:700;">${parseFloat(r.kharifCropAreaSum || r.kharifCropArea) > 0 ? (r.kharifCropAreaSum || r.kharifCropArea) : '—'}</td>
+                    <td style="padding:10px 8px; color:#1e40af; font-weight:600;">${rabiCropLabel(r)}</td>
+                    <td style="padding:10px 8px; color:#1e40af; font-weight:700;">${parseFloat(r.rabiCropAreaSum || r.rabiCropArea) > 0 ? (r.rabiCropAreaSum || r.rabiCropArea) : '—'}</td>
                     <td style="padding:10px 8px; color:#3730a3; font-weight:800;">${r.isDufasali ? r.dufasaliArea : '—'}</td>
                     <td style="padding:10px 8px; font-weight:600;">${r.type || '—'}</td>
                     <td style="padding:10px 8px; font-size:12px; color:#475569; line-height:1.4; font-family:'Noto Sans Devanagari',sans-serif; max-width:200px;">${r.nistar || '—'}</td>
@@ -2525,20 +3173,44 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             const rabiStats = {};
 
             gramRecs.forEach(r => {
-                const khCrop = (r.finalKharifCrop || '').trim();
-                const khArea = parseFloat(r.kharifCropArea || 0);
-                if (khCrop && khCrop !== '—' && khArea > 0) {
-                    if (!kharifStats[khCrop]) kharifStats[khCrop] = { count: 0, area: 0 };
-                    kharifStats[khCrop].count++;
-                    kharifStats[khCrop].area += khArea;
+                if (r.kharifSource === 'DCS' && r.dcsKharifEntries && r.dcsKharifEntries.length) {
+                    const seenKh = new Set();
+                    r.dcsKharifEntries.forEach(e => {
+                        const khCrop = (e.cropName || '').trim();
+                        const khArea = parseFloat(e.cropArea || 0);
+                        if (!khCrop || khCrop === '—' || khCrop === '--' || khArea <= 0) return;
+                        if (!kharifStats[khCrop]) kharifStats[khCrop] = { count: 0, area: 0 };
+                        kharifStats[khCrop].area += khArea;
+                        if (!seenKh.has(khCrop)) { seenKh.add(khCrop); kharifStats[khCrop].count++; }
+                    });
+                } else {
+                    const khCrop = (r.finalKharifCrop || '').trim();
+                    const khArea = parseFloat(r.kharifCropAreaSum || r.kharifCropArea || 0);
+                    if (khCrop && khCrop !== '—' && khArea > 0) {
+                        if (!kharifStats[khCrop]) kharifStats[khCrop] = { count: 0, area: 0 };
+                        kharifStats[khCrop].count++;
+                        kharifStats[khCrop].area += khArea;
+                    }
                 }
 
-                const rbCrop = (r.finalRabiCrop || '').trim();
-                const rbArea = parseFloat(r.rabiCropArea || 0);
-                if (rbCrop && rbCrop !== '—' && rbArea > 0) {
-                    if (!rabiStats[rbCrop]) rabiStats[rbCrop] = { count: 0, area: 0 };
-                    rabiStats[rbCrop].count++;
-                    rabiStats[rbCrop].area += rbArea;
+                if (r.dcsRabiEntries && r.dcsRabiEntries.length) {
+                    const seenRb = new Set();
+                    r.dcsRabiEntries.forEach(e => {
+                        const rbCrop = (e.cropName || '').trim();
+                        const rbArea = parseFloat(e.cropArea || 0);
+                        if (!rbCrop || rbCrop === '—' || rbCrop === '--' || rbArea <= 0) return;
+                        if (!rabiStats[rbCrop]) rabiStats[rbCrop] = { count: 0, area: 0 };
+                        rabiStats[rbCrop].area += rbArea;
+                        if (!seenRb.has(rbCrop)) { seenRb.add(rbCrop); rabiStats[rbCrop].count++; }
+                    });
+                } else {
+                    const rbCrop = (r.finalRabiCrop || '').trim();
+                    const rbArea = parseFloat(r.rabiCropAreaSum || r.rabiCropArea || 0);
+                    if (rbCrop && rbCrop !== '—' && rbArea > 0) {
+                        if (!rabiStats[rbCrop]) rabiStats[rbCrop] = { count: 0, area: 0 };
+                        rabiStats[rbCrop].count++;
+                        rabiStats[rbCrop].area += rbArea;
+                    }
                 }
             });
 
@@ -2604,27 +3276,31 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
         // ── Crop Khasra Modal: fasal-wise khasra list ──────────────────────
         let _cropModalRecs = [];
         let _cropModalTitle = '';
+        let _cropModalCropName = '';
 
         function openCropKhasraModal(gramEnc, cropEnc, season) {
             const gram = decodeURIComponent(gramEnc);
             const cropName = decodeURIComponent(cropEnc);
 
-            // records filter
             const recs = records.filter(r => {
                 if (r.v !== gram) return false;
-                if (season === 'kharif') return (r.finalKharifCrop || '').trim() === cropName;
-                if (season === 'rabi')  return (r.finalRabiCrop  || '').trim() === cropName;
+                if (season === 'kharif') return recordHasKharifCropName(r, cropName);
+                if (season === 'rabi') return recordHasRabiCropName(r, cropName);
                 return false;
             }).sort((a, b) => (parseInt(a.kn)||0) - (parseInt(b.kn)||0));
 
             _cropModalRecs  = recs;
+            _cropModalCropName = cropName;
             _cropModalTitle = `${gram} — ${season === 'kharif' ? '🌾 खरीफ' : '🚜 रबी'}: ${cropName}`;
 
-            const totalArea = recs.reduce((s,r) => s + parseFloat(season==='kharif'?r.kharifCropArea:r.rabiCropArea||0), 0).toFixed(3);
+            const totalArea = recs.reduce((s, r) => {
+                const a = season === 'kharif' ? kharifAreaForNamedCrop(r, cropName) : rabiAreaForNamedCrop(r, cropName);
+                return s + parseFloat(a || 0);
+            }, 0).toFixed(3);
 
             const rowsHtml = recs.map((r, i) => {
-                const area   = season === 'kharif' ? r.kharifCropArea : r.rabiCropArea;
-                const crop   = season === 'kharif' ? r.finalKharifCrop : r.finalRabiCrop;
+                const area   = season === 'kharif' ? kharifAreaForNamedCrop(r, cropName) : rabiAreaForNamedCrop(r, cropName);
+                const crop   = cropName;
                 const flag   = r.kharifSource === 'DCS'
                     ? '<span style="background:#dbeafe;color:#1e40af;padding:3px 8px;border-radius:6px;font-size:12px;font-weight:800;">DCS</span>'
                     : r.kharifSource === 'Bhuiyya'
@@ -2705,8 +3381,8 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
             csv += '"क्र.","खसरा नं.","बसरा नं.","भूमिस्वामी","फसल का नाम","रकबा (हे.)","Flag"\n';
             _cropModalRecs.forEach((r, i) => {
                 const isTitleKharif = _cropModalTitle.includes('खरीफ');
-                const area  = isTitleKharif ? r.kharifCropArea : r.rabiCropArea;
-                const crop  = isTitleKharif ? r.finalKharifCrop : r.finalRabiCrop;
+                const area  = isTitleKharif ? kharifAreaForNamedCrop(r, _cropModalCropName) : rabiAreaForNamedCrop(r, _cropModalCropName);
+                const crop  = _cropModalCropName;
                 const flag  = r.kharifSource === 'DCS' ? 'DCS' : r.kharifSource === 'Bhuiyya' ? 'Bhuiyya' : '—';
                 const owner = (r.owner||'').replace(/"/g,'""').replace(/[\r\n]+/g,' ');
                 csv += `${i+1},"${r.kn}","${r.bn||'—'}","${owner}","${crop||'—'}","${area}","${flag}"\n`;
@@ -2723,11 +3399,14 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
         function printCropKhasraPDF() {
             if (!_cropModalRecs.length) return;
             const isTitleKharif = _cropModalTitle.includes('खरीफ');
-            const totalArea = _cropModalRecs.reduce((s,r) => s + parseFloat(isTitleKharif?r.kharifCropArea:r.rabiCropArea||0), 0).toFixed(3);
+            const totalArea = _cropModalRecs.reduce((s, r) => {
+                const a = isTitleKharif ? kharifAreaForNamedCrop(r, _cropModalCropName) : rabiAreaForNamedCrop(r, _cropModalCropName);
+                return s + parseFloat(a || 0);
+            }, 0).toFixed(3);
 
             const rowsHtml = _cropModalRecs.map((r,i) => {
-                const area = isTitleKharif ? r.kharifCropArea : r.rabiCropArea;
-                const crop = isTitleKharif ? r.finalKharifCrop : r.finalRabiCrop;
+                const area = isTitleKharif ? kharifAreaForNamedCrop(r, _cropModalCropName) : rabiAreaForNamedCrop(r, _cropModalCropName);
+                const crop = _cropModalCropName;
                 const flag = r.kharifSource === 'DCS' ? 'DCS' : r.kharifSource === 'Bhuiyya' ? 'Bhuiyya' : '—';
                 const ownerStr = (r.owner||'').replace(/[\r\n]+/g,' ').replace(/\s+/g,' ').trim();
                 return `<tr style="background:${i%2===0?'#f8fafc':'#fff'};">
@@ -2788,10 +3467,10 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                     `"${r.kn}"`,
                     `"${r.bn || '-'}"`,
                     `"${(r.owner || '').replace(/"/g, '""')}"`,
-                    `"${r.finalKharifCrop || '-'}"`,
-                    `"${r.kharifCropArea > 0 ? r.kharifCropArea : '-'}"`,
-                    `"${r.finalRabiCrop || '-'}"`,
-                    `"${r.rabiCropArea > 0 ? r.rabiCropArea : '-'}"`,
+                    `"${kharifCropLabel(r).replace(/"/g, '""')}"`,
+                    `"${parseFloat(r.kharifCropAreaSum || r.kharifCropArea) > 0 ? (r.kharifCropAreaSum || r.kharifCropArea) : '-'}"`,
+                    `"${rabiCropLabel(r).replace(/"/g, '""')}"`,
+                    `"${parseFloat(r.rabiCropAreaSum || r.rabiCropArea) > 0 ? (r.rabiCropAreaSum || r.rabiCropArea) : '-'}"`,
                     `"${r.isDufasali ? r.dufasaliArea : '-'}"`,
                     `"${r.type || '-'}"`,
                     `"${(r.nistar || '-').replace(/\n/g, ' ')}"`,
@@ -2823,10 +3502,10 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                     <td style="font-weight:800; text-align:center;">${r.kn}</td>
                     <td style="text-align:center;">${r.bn || '—'}</td>
                     <td>${r.owner}</td>
-                    <td style="color:#065f46;">${r.finalKharifCrop || '—'}</td>
-                    <td style="text-align:right;">${r.kharifCropArea > 0 ? r.kharifCropArea : '—'}</td>
-                    <td style="color:#1e40af;">${r.finalRabiCrop || '—'}</td>
-                    <td style="text-align:right;">${r.rabiCropArea > 0 ? r.rabiCropArea : '—'}</td>
+                    <td style="color:#065f46;">${kharifCropLabel(r)}</td>
+                    <td style="text-align:right;">${parseFloat(r.kharifCropAreaSum || r.kharifCropArea) > 0 ? (r.kharifCropAreaSum || r.kharifCropArea) : '—'}</td>
+                    <td style="color:#1e40af;">${rabiCropLabel(r)}</td>
+                    <td style="text-align:right;">${parseFloat(r.rabiCropAreaSum || r.rabiCropArea) > 0 ? (r.rabiCropAreaSum || r.rabiCropArea) : '—'}</td>
                     <td style="text-align:right;">${r.isDufasali ? r.dufasaliArea : '—'}</td>
                     <td style="padding:6px 8px; font-weight:600;">${r.type || '—'}</td>
                     <td style="padding:6px 8px; font-size:11px; color:#475569; line-height:1.4; max-width:200px;">${r.nistar || '—'}</td>
@@ -2914,10 +3593,10 @@ ${uniqueBasras ? `<p style="text-align:center;font-size:13px;margin-top:-15px;ma
                     '<td style="padding:10px 8px;font-weight:800;color:#1e40af;">' + r.kn + '</td>' +
                     '<td style="padding:10px 8px;color:#475569;">' + (r.bn || '—') + '</td>' +
                     '<td style="padding:10px 8px;font-weight:700;color:#1e293b;">' + r.owner + '</td>' +
-                    '<td style="padding:10px 8px;color:#065f46;font-weight:600;">' + (r.finalKharifCrop || '—') + '</td>' +
-                    '<td style="padding:10px 8px;color:#065f46;font-weight:700;">' + (parseFloat(r.kharifCropArea) > 0 ? r.kharifCropArea : '—') + '</td>' +
-                    '<td style="padding:10px 8px;color:#1e40af;font-weight:600;">' + (r.finalRabiCrop || '—') + '</td>' +
-                    '<td style="padding:10px 8px;color:#1e40af;font-weight:700;">' + (parseFloat(r.rabiCropArea) > 0 ? r.rabiCropArea : '—') + '</td>' +
+                    '<td style="padding:10px 8px;color:#065f46;font-weight:600;">' + kharifCropLabel(r) + '</td>' +
+                    '<td style="padding:10px 8px;color:#065f46;font-weight:700;">' + (parseFloat(r.kharifCropAreaSum || r.kharifCropArea) > 0 ? (r.kharifCropAreaSum || r.kharifCropArea) : '—') + '</td>' +
+                    '<td style="padding:10px 8px;color:#1e40af;font-weight:600;">' + rabiCropLabel(r) + '</td>' +
+                    '<td style="padding:10px 8px;color:#1e40af;font-weight:700;">' + (parseFloat(r.rabiCropAreaSum || r.rabiCropArea) > 0 ? (r.rabiCropAreaSum || r.rabiCropArea) : '—') + '</td>' +
                     '<td style="padding:10px 8px;color:#3730a3;font-weight:800;">' + (r.isDufasali ? r.dufasaliArea : '—') + '</td>' +
                     '<td style="padding:10px 8px;font-weight:600;">' + (r.type || '—') + '</td>' +
                     '<td style="padding:10px 8px;font-size:12px;color:#475569;line-height:1.4;max-width:200px;">' + (r.nistar || '—') + '</td>' +
